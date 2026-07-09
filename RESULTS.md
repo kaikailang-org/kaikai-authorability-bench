@@ -28,12 +28,20 @@ domain-framed fresh material, the rest classic shapes kept deliberately
 
 ## Plumbing pilot (agent loop)
 
-One cell (`parse_duration` × kaikai × 1 seed × 2 rounds) was run through
+One cell (`parse_duration` × kaikai × 1 seed) was run through
 `claude -p --output-format json --allowedTools Bash` to validate the LLM
 loop end to end: prompt assembly, stdin delivery, scratch-dir isolation,
-kai shim on PATH, JSON/usage parsing, transcript + results.jsonl writing.
-Findings are in README "Agent invocation" (variadic-flag prompt swallowing;
-stdin fix). Pilot outcome — see the latest `results/run-*` directory.
+kai shim on PATH, solution-file delivery, JSON/usage parsing, transcript +
+results.jsonl writing. Findings are in README "Agent invocation"
+(variadic-flag prompt swallowing → stdin; prose final messages →
+`sol.<ext>` file contract with stdout fallback).
+
+Pilot outcome: **green in round 1** — the agent probed the toolchain in its
+scratch dir, wrote `sol.kai`, and the hidden tests passed on the first
+harness compile (~165 s; ~576k tokens in / 5.6k out, inner agent turns
+included). One cell proves plumbing, not the thesis; the full grid is
+still unrun. `runner/run.py --report <run-dir>...` aggregates any set of
+runs into the success@k / rounds / tokens table, grouped by lang × config.
 
 ## Gaps left open (annotated for the next authoring pass)
 
