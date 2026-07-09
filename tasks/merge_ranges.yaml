@@ -1,0 +1,15 @@
+id: merge_ranges
+tier: function
+freshness: classic-algorithm shape (interval merge), calendar framing
+prompt: |
+  A calendar holds busy ranges as half-open intervals [start, finish) with
+  start < finish, in arbitrary order. Merge every group of overlapping or
+  touching ranges (touching: one's finish equals the next's start) into a
+  single range, and return the merged ranges sorted by start. Example:
+  [{5,7},{1,3},{2,4}] -> [{1,4},{5,7}]; [{1,2},{2,3}] -> [{1,3}]. Empty ->
+  empty. Define the range record type with the exact shape given in the
+  signature.
+signatures:
+  kaikai: "pub type Range = { start: Int, finish: Int }  //  pub fn merge_ranges(rs: [Range]) : [Range]"
+  rust:   "pub struct Range { pub start: i64, pub finish: i64 }  //  pub fn merge_ranges(rs: &[Range]) -> Vec<Range>"
+  go:     "type Range struct { Start, Finish int64 }  //  func MergeRanges(rs []Range) []Range"

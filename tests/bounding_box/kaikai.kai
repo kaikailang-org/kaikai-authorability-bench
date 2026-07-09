@@ -1,0 +1,12 @@
+fn chk(ps: [Point], a: Int, b: Int, c: Int, d: Int) : Bool = match bounding_box(ps) {
+  Some(bx) -> bx.min_x == a and bx.min_y == b and bx.max_x == c and bx.max_y == d
+  None -> false
+}
+
+fn main() : Int / Stdout = {
+  let ok = chk([Point { x: 1, y: 5 }, Point { x: -2, y: 3 }, Point { x: 4, y: 4 }], -2, 3, 4, 5) and
+    chk([Point { x: 7, y: -1 }], 7, -1, 7, -1) and
+    (match bounding_box([]) { Some(_) -> false
+                              None -> true })
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

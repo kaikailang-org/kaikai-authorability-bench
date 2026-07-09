@@ -1,0 +1,7 @@
+fn main() : Int / Stdout = {
+  let ok = invoice_total([Line { qty: 2, unit_cents: 250 }, Line { qty: 1, unit_cents: 100 }]) == 600 and
+    invoice_total([]) == 0 and
+    invoice_total([Line { qty: 0, unit_cents: 999 }]) == 0 and
+    invoice_total([Line { qty: -3, unit_cents: 100 }, Line { qty: 4, unit_cents: 25 }]) == 100
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

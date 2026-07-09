@@ -1,0 +1,13 @@
+id: invoice_total
+tier: function
+freshness: fresh (record fold with a filter rule, invoicing framing)
+prompt: |
+  An invoice is a list of line items, each with a quantity and a unit price
+  in cents. Return the invoice total in cents: the sum of quantity times unit
+  price over the lines. Lines with quantity <= 0 are void and contribute
+  nothing. Empty invoice -> 0. Define the line record type with the exact
+  shape given in the signature.
+signatures:
+  kaikai: "pub type Line = { qty: Int, unit_cents: Int }  //  pub fn invoice_total(lines: [Line]) : Int"
+  rust:   "pub struct Line { pub qty: i64, pub unit_cents: i64 }  //  pub fn invoice_total(lines: &[Line]) -> i64"
+  go:     "type Line struct { Qty, UnitCents int64 }  //  func InvoiceTotal(lines []Line) int64"

@@ -1,0 +1,14 @@
+id: range_overlap
+tier: function
+freshness: fresh (interval intersection with half-open semantics)
+prompt: |
+  Two bookings are half-open intervals [start, finish) with start < finish.
+  Return their intersection as a range if they truly overlap; touching
+  intervals (one's finish equals the other's start) and disjoint intervals do
+  not overlap: return the language's idiomatic absent value. Example:
+  [1,5) and [3,8) -> [3,5); [1,3) and [3,5) -> none. Define the range record
+  type with the exact shape given in the signature.
+signatures:
+  kaikai: "pub type Range = { start: Int, finish: Int }  //  pub fn range_overlap(a: Range, b: Range) : Option[Range]"
+  rust:   "pub struct Range { pub start: i64, pub finish: i64 }  //  pub fn range_overlap(a: &Range, b: &Range) -> Option<Range>"
+  go:     "type Range struct { Start, Finish int64 }  //  func RangeOverlap(a, b Range) (Range, bool)"

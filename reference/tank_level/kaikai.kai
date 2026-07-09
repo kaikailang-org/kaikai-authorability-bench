@@ -1,0 +1,5 @@
+pub fn tank_level(cap: Int, deltas: [Int]) : Int =
+  deltas.foldl(0, (lvl, d) => {
+    let n = lvl + d
+    if n > cap { cap } else { if n < 0 { 0 } else { n } }
+  })

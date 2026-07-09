@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let a = clamp_summary([1, 50, -3, 7], 0, 10)
+  let b = clamp_summary([], 0, 10)
+  let c = clamp_summary([5, 5], 5, 5)
+  let ok = a.values == [1, 10, 0, 7] and a.changed == 2 and
+    b.values == [] and b.changed == 0 and
+    c.values == [5, 5] and c.changed == 0
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

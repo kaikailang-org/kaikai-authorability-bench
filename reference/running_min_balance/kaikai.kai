@@ -1,0 +1,9 @@
+fn scan_min(txs: [Int], bal: Int, low: Int) : Int = match txs {
+  [] -> low
+  [t, ...rest] -> {
+    let b = bal + t
+    scan_min(rest, b, if b < low { b } else { low })
+  }
+}
+
+pub fn running_min_balance(txs: [Int]) : Int = scan_min(txs, 0, 0)

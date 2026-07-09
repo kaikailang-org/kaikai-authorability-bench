@@ -1,0 +1,21 @@
+fn ranges_eq(a: [Range], b: [Range]) : Bool = match a {
+  [] -> match b { [] -> true
+                  _ -> false }
+  [x, ...xs] -> match b {
+    [] -> false
+    [y, ...ys] -> if x.start == y.start and x.finish == y.finish { ranges_eq(xs, ys) } else { false }
+  }
+}
+
+fn main() : Int / Stdout = {
+  let ok = ranges_eq(merge_ranges([Range { start: 5, finish: 7 }, Range { start: 1, finish: 3 }, Range { start: 2, finish: 4 }]),
+      [Range { start: 1, finish: 4 }, Range { start: 5, finish: 7 }]) and
+    ranges_eq(merge_ranges([Range { start: 1, finish: 2 }, Range { start: 2, finish: 3 }]),
+      [Range { start: 1, finish: 3 }]) and
+    ranges_eq(merge_ranges([]), []) and
+    ranges_eq(merge_ranges([Range { start: 1, finish: 10 }, Range { start: 2, finish: 3 }]),
+      [Range { start: 1, finish: 10 }]) and
+    ranges_eq(merge_ranges([Range { start: 4, finish: 5 }, Range { start: 1, finish: 2 }]),
+      [Range { start: 1, finish: 2 }, Range { start: 4, finish: 5 }])
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

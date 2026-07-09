@@ -1,0 +1,13 @@
+id: clamp_summary
+tier: function
+freshness: fresh (map with change count into a record, calibration framing)
+prompt: |
+  Calibrate a list of sensor readings against a valid band [lo, hi] with
+  lo <= hi: clamp each reading into the band (below lo becomes lo, above hi
+  becomes hi) and count how many readings actually changed. Return both the
+  clamped list (input order) and the count in a record with the exact shape
+  given in the signature.
+signatures:
+  kaikai: "pub type Clamped = { values: [Int], changed: Int }  //  pub fn clamp_summary(xs: [Int], lo: Int, hi: Int) : Clamped"
+  rust:   "pub struct Clamped { pub values: Vec<i64>, pub changed: i64 }  //  pub fn clamp_summary(xs: &[i64], lo: i64, hi: i64) -> Clamped"
+  go:     "type Clamped struct { Values []int64; Changed int64 }  //  func ClampSummary(xs []int64, lo, hi int64) Clamped"
