@@ -95,9 +95,13 @@ results/run-<ts>/        one directory per run:
 
 The agent command is invoked once per round with the prompt piped to stdin,
 cwd set to an empty per-round scratch directory so it can exercise the
-toolchain (hidden tests live elsewhere). If it emits claude-style JSON
-(`--output-format json`), token counts are read from `usage`; plain stdout is
-taken verbatim as the solution, token counts unknown. Example:
+toolchain (hidden tests live elsewhere). The solution is delivered by writing
+`sol.<ext>` in that directory — the natural move for an agentic CLI with file
+tools — with the final message as fallback for pure text completers (agentic
+CLIs answer prose like "wrote the file", which is not compilable). If the
+agent emits claude-style JSON (`--output-format json`), token counts are read
+from `usage`; otherwise token counts are unknown. Each transcript round
+records which delivery path was used. Example:
 
 ```
 runner/run.py --agent 'claude -p --output-format json --allowedTools Bash' --seeds 5

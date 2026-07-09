@@ -123,9 +123,10 @@ Specification:
 {spec}
 
 {tools}
-Output ONLY the complete source (no fences, no prose). Do not write a main
-function or tests; the harness provides them. Previous attempt feedback, if
-any, follows:
+Deliver the solution by writing the complete source to `{solfile}` in your
+working directory; if you cannot write files, output ONLY the source (no
+fences, no prose). Do not write a main function or tests; the harness
+provides them. Previous attempt feedback, if any, follows:
 {feedback}
 """
 
@@ -253,6 +254,7 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
     sig = task["signatures"][lang]
     kaikai = lang == "kaikai"
     tools = kai_tools(config) if kaikai else TOOLS.get(lang, "")
+    solname = "sol" + Path(ADAPTERS[lang][0]).suffix
     fb, rounds, green = "(first attempt)", 0, False
     tin = tout = 0
     have_usage = False
@@ -260,7 +262,7 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
     for r in range(1, max_rounds + 1):
         rounds = r
         prompt = PROMPT.format(lang=lang, signature=sig, spec=task["prompt"],
-                               tools=tools, feedback=fb)
+                               tools=tools, solfile=solname, feedback=fb)
         base = run_dir / "work" / f"{task['id']}-{lang}-{seed}" / f"r{r}"
         scratch = base / "scratch"
         scratch.mkdir(parents=True, exist_ok=True)
@@ -277,6 +279,12 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
             entry["feedback"] = fb
             transcript.append(entry)
             continue
+        solfile = scratch / solname
+        if solfile.exists():
+            sol = solfile.read_text()
+            entry["delivery"] = "file"
+        else:
+            entry["delivery"] = "stdout"
         green, fb = cell(task, lang, sol, base / "cell")
         if not green and kaikai and config == "flat-diags":
             fb = flatten_diags(fb)
@@ -290,6 +298,40 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
             "green": green, "rounds": rounds,
             "tokens_in": tin if have_usage else None,
             "tokens_out": tout if have_usage else None}
+
+def report(run_dirs):
+    """Aggregate results.jsonl records across runs; one row per lang x config.
+    success@k = fraction of cells green within k rounds."""
+    recs = []
+    for rd in run_dirs:
+        f = Path(rd) / "results.jsonl"
+        if not f.exists():
+            sys.exit(f"no results.jsonl in {rd}")
+        recs += [json.loads(l) for l in f.read_text().splitlines() if l.strip()]
+    if not recs:
+        sys.exit("no records")
+    maxr = max(r["rounds"] for r in recs)
+    groups = {}
+    for r in recs:
+        groups.setdefault((r["lang"], r.get("config", "full")), []).append(r)
+    hdr = f"{'lang':8} {'config':11} {'cells':>5} " + \
+          " ".join(f"{'s@' + str(k):>6}" for k in range(1, maxr + 1)) + \
+          f" {'rounds':>7} {'tok/cell':>9}"
+    print(hdr); print("-" * len(hdr))
+    for (lang, cfg), rs in sorted(groups.items()):
+        n = len(rs)
+        greens = [r for r in rs if r["green"]]
+        curve = " ".join(f"{sum(1 for g in greens if g['rounds'] <= k) / n:6.2f}"
+                         for k in range(1, maxr + 1))
+        mr = f"{sum(g['rounds'] for g in greens) / len(greens):7.2f}" if greens else f"{'-':>7}"
+        toks = [r["tokens_in"] + r["tokens_out"] for r in rs
+                if r.get("tokens_in") is not None]
+        tk = f"{sum(toks) / len(toks):9.0f}" if toks else f"{'?':>9}"
+        print(f"{lang:8} {cfg:11} {n:5} {curve} {mr} {tk}")
+    for (lang, cfg), rs in sorted(groups.items()):
+        stalled = sorted({r["task"] for r in rs if not r["green"]})
+        if stalled:
+            print(f"\nstalled {lang}/{cfg}: {', '.join(stalled)}")
 
 def agent_loop(agent_cmd, langs, seeds, max_rounds, timeout, config, only=None):
     ts = int(time.time())
@@ -337,12 +379,16 @@ if __name__ == "__main__":
     ap.add_argument("--config", choices=CONFIGS, default="full",
                     help="kaikai ablation; other languages are unaffected")
     ap.add_argument("--tasks", help="comma-separated task ids (default: all)")
+    ap.add_argument("--report", nargs="+", metavar="RUN_DIR",
+                    help="aggregate results.jsonl across run dirs")
     ap.add_argument("--flatten-diags", action="store_true",
                     help=argparse.SUPPRESS)  # stdin->stdout filter, used by the shim
     a = ap.parse_args()
     langs = a.langs.split(",")
     if a.flatten_diags:
         sys.stdout.write(flatten_diags(sys.stdin.read()))
+    elif a.report:
+        report(a.report)
     elif a.smoke:
         sys.exit(smoke(langs))
     elif a.agent:
