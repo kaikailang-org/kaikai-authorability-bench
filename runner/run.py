@@ -51,10 +51,11 @@ ADAPTERS = {
 
 # ---------------------------------------------------------------- helpers
 
-def sh(cmd, cwd=None, timeout=120, env=None):
+def sh(cmd, cwd=None, timeout=120, env=None, stdin=None):
     try:
         p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout,
-                           env={**os.environ, **env} if env else None)
+                           errors="replace",
+                           input=stdin, env={**os.environ, **env} if env else None)
         return p.returncode, p.stdout, p.stderr
     except subprocess.TimeoutExpired:
         return 124, "", "TIMEOUT"
@@ -225,11 +226,12 @@ def strip_fences(s):
     return s
 
 def run_agent(agent_cmd, prompt, cwd, timeout, env=None):
-    """Invoke the agent once. Returns (ok, solution_or_error, tokens_in,
-    tokens_out, raw_stdout). Token counts come from claude-style JSON output
-    (`--output-format json`); plain stdout is taken verbatim as the solution
-    with unknown (None) token counts."""
-    rc, out, err = sh(agent_cmd + [prompt], cwd=cwd, timeout=timeout, env=env)
+    """Invoke the agent once, prompt on stdin (an argv prompt gets swallowed
+    by variadic flags like claude's --allowedTools). Returns (ok,
+    solution_or_error, tokens_in, tokens_out, raw_stdout). Token counts come
+    from claude-style JSON output (`--output-format json`); plain stdout is
+    taken verbatim as the solution with unknown (None) token counts."""
+    rc, out, err = sh(agent_cmd, cwd=cwd, timeout=timeout, env=env, stdin=prompt)
     if rc != 0:
         return False, f"AGENT ERROR (exit {rc}):\n{err[-1000:]}", None, None, out
     sol, tin, tout = out, None, None
@@ -325,7 +327,7 @@ def agent_loop(agent_cmd, langs, seeds, max_rounds, timeout, config, only=None):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--smoke", action="store_true")
-    ap.add_argument("--agent", help="agent command; prompt appended as last arg, "
+    ap.add_argument("--agent", help="agent command; prompt is piped to stdin, "
                     "e.g. 'claude -p --output-format json --allowedTools Bash'")
     ap.add_argument("--langs", default="kaikai,rust,go")
     ap.add_argument("--seeds", type=int, default=5)

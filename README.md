@@ -59,15 +59,23 @@ result record.
 
 ## Task tiers
 
-1. **Function level** (~50 target; 5 pilot tasks here) — the Tier 3 claim
-   verbatim. Written fresh; classic-algorithm overlap with training data is
-   unavoidable at this level and noted per task.
-2. **Module level** (~15) — implement a module against a spec + tests.
-3. **Repo level** (~10) — fix a planted bug in a given codebase.
+1. **Function level** (50 tasks in `tasks/`, all smoke-validated: 150/150
+   reference cells green) — the Tier 3 claim verbatim. Written fresh with
+   domain framing (parsers, sensors, calendars, ledgers, payments); the
+   unavoidable classic-algorithm overlap with training data is declared per
+   task in its `freshness` field.
+2. **Module level** (~15, not yet authored) — implement a module against a
+   spec + tests.
+3. **Repo level** (~10, not yet authored) — fix a planted bug in a given
+   codebase.
 
-> **Pilot status:** the 5 tasks in `tasks/` are harness-validation grade
-> (Int/list-shaped, minimal stdlib surface so reference solutions are
-> trivially auditable). The real set gets authored once the harness is proven.
+Function-level coverage: structural recursion over lists, Option/error
+handling, record definition and folds, accumulator scans, string processing,
+and boundary arithmetic (dates, pagination, remainder distribution). Fairness
+rule applied throughout: no task requires O(1) random access as the only
+reasonable solution — specs that tolerate a linear or quadratic scan say so
+explicitly, so the idiomatic cons-list solution in kaikai competes on equal
+footing with slice-based Rust/Go.
 
 ## Layout
 
@@ -83,15 +91,28 @@ results/run-<ts>/        one directory per run:
   work/<cell>/r<N>/        scratch (agent cwd) + cell (harness compile dir)
 ```
 
-The agent command is invoked once per round with the prompt as its last
-argument, cwd set to an empty per-round scratch directory so it can exercise
-the toolchain (hidden tests live elsewhere). If it emits claude-style JSON
+## Agent invocation
+
+The agent command is invoked once per round with the prompt piped to stdin,
+cwd set to an empty per-round scratch directory so it can exercise the
+toolchain (hidden tests live elsewhere). If it emits claude-style JSON
 (`--output-format json`), token counts are read from `usage`; plain stdout is
 taken verbatim as the solution, token counts unknown. Example:
 
 ```
 runner/run.py --agent 'claude -p --output-format json --allowedTools Bash' --seeds 5
 ```
+
+Lessons from the plumbing pilot (claude CLI 2.1.x):
+
+- **Prompt must go via stdin, not argv.** `--allowedTools` is variadic, so a
+  trailing prompt argument is swallowed as another tool name and the CLI dies
+  with "Input must be provided either through stdin or as a prompt argument".
+- `--allowedTools Bash` is required for the agent to run the toolchain probes;
+  without it every `kai`/`rustc`/`go` invocation is permission-denied in
+  `-p` mode.
+- Use `--tasks id1,id2` and `--langs kaikai` to scope a run; every run writes
+  `meta.json`, `results.jsonl`, and full per-round transcripts.
 
 Every task ships with a reference solution per language; `--smoke` compiles and
 runs reference+tests for every cell — a task is well-formed only if all three
