@@ -1,0 +1,14 @@
+id: leaderboard_top3
+tier: function
+freshness: fresh (stable top-k selection over records, leaderboard framing)
+prompt: |
+  A game leaderboard holds entries with a player id and a point total.
+  Return the ids of the top 3 entries by points, highest first; ties are
+  broken by input order (earlier entry ranks higher). With fewer than 3
+  entries, return the ids of all of them, ranked the same way. Define the
+  entry record type with the exact shape given in the signature. Example:
+  [{1,50},{2,80},{3,50},{4,10}] -> [2,1,3].
+signatures:
+  kaikai: "pub type Score = { id: Int, points: Int }  //  pub fn leaderboard_top3(scores: [Score]) : [Int]"
+  rust:   "pub struct Score { pub id: i64, pub points: i64 }  //  pub fn leaderboard_top3(scores: &[Score]) -> Vec<i64>"
+  go:     "type Score struct { ID, Points int64 }  //  func LeaderboardTop3(scores []Score) []int64"

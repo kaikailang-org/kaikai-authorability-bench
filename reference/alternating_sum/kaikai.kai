@@ -1,0 +1,6 @@
+fn alt(xs: [Int], sign: Int) : Int = match xs {
+  [] -> 0
+  [h, ...t] -> sign * h + alt(t, 0 - sign)
+}
+
+pub fn alternating_sum(xs: [Int]) : Int = alt(xs, 1)

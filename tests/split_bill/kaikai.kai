@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let ok = split_bill(100, 3) == [34,33,33] and
+    split_bill(100, 4) == [25,25,25,25] and
+    split_bill(5, 6) == [1,1,1,1,1,0] and
+    split_bill(0, 2) == [0,0] and
+    split_bill(7, 1) == [7]
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

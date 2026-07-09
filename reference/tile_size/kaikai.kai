@@ -1,0 +1,1 @@
+pub fn tile_size(w: Int, h: Int) : Int = if h == 0 { w } else { tile_size(h, w % h) }

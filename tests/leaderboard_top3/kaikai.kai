@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let ok = leaderboard_top3([Score { id: 1, points: 50 }, Score { id: 2, points: 80 }, Score { id: 3, points: 50 }, Score { id: 4, points: 10 }]) == [2,1,3] and
+    leaderboard_top3([]) == [] and
+    leaderboard_top3([Score { id: 9, points: 1 }]) == [9] and
+    leaderboard_top3([Score { id: 1, points: 5 }, Score { id: 2, points: 5 }, Score { id: 3, points: 5 }, Score { id: 4, points: 5 }]) == [1,2,3] and
+    leaderboard_top3([Score { id: 1, points: -5 }, Score { id: 2, points: -1 }]) == [2,1]
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}
