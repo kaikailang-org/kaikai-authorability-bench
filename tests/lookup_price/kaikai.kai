@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let items = [Item { sku: 10, cents: 250 }, Item { sku: 7, cents: 100 }, Item { sku: 10, cents: 999 }]
+  let ok = lookup_price(items, 7) == Some(100) and
+    lookup_price(items, 10) == Some(250) and
+    lookup_price(items, 3) == None and
+    lookup_price([], 1) == None
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

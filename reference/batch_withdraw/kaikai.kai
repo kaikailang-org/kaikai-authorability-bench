@@ -1,0 +1,4 @@
+pub fn batch_withdraw(balance: Int, amounts: [Int]) : Option[Int] = match amounts {
+  [] -> Some(balance)
+  [a, ...t] -> if a <= 0 or a > balance { None } else { batch_withdraw(balance - a, t) }
+}

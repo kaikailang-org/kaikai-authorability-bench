@@ -1,0 +1,4 @@
+fn scan(taken: [Int], c: Int) : Int =
+  if taken.contains(c) { scan(taken, c + 1) } else { c }
+
+pub fn next_free_id(taken: [Int]) : Int = scan(taken, 0)

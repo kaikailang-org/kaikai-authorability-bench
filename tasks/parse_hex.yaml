@@ -1,0 +1,13 @@
+id: parse_hex
+tier: function
+freshness: fresh-ish (strict 0x-prefixed hex parser)
+prompt: |
+  Parse a hexadecimal literal of the exact form "0x" followed by one or more
+  hex digits (0-9, a-f, A-F, mixed case allowed) into its integer value.
+  Anything else — missing prefix, empty digit part, invalid characters, or a
+  sign — is invalid: return the language's idiomatic absent value. Examples:
+  "0x1F" -> 31, "0xff" -> 255, "0x0" -> 0; "1F" / "0x" / "0xG1" -> invalid.
+signatures:
+  kaikai: "pub fn parse_hex(s: String) : Option[Int]"
+  rust:   "pub fn parse_hex(s: &str) -> Option<i64>"
+  go:     "func ParseHex(s string) (int64, bool)"

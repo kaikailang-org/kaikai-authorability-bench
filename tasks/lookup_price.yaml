@@ -1,0 +1,12 @@
+id: lookup_price
+tier: function
+freshness: fresh (assoc lookup over records, price-list framing)
+prompt: |
+  A price list is a list of items, each with a numeric sku and a price in
+  cents. Return the price of the first item whose sku matches, or the
+  language's idiomatic absent value if no item matches. Define the item
+  record type with the exact shape given in the signature.
+signatures:
+  kaikai: "pub type Item = { sku: Int, cents: Int }  //  pub fn lookup_price(items: [Item], sku: Int) : Option[Int]"
+  rust:   "pub struct Item { pub sku: i64, pub cents: i64 }  //  pub fn lookup_price(items: &[Item], sku: i64) -> Option<i64>"
+  go:     "type Item struct { Sku, Cents int64 }  //  func LookupPrice(items []Item, sku int64) (int64, bool)"

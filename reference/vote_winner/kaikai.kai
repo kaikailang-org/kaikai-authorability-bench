@@ -1,0 +1,11 @@
+pub fn vote_winner(votes: [Int]) : Option[Int] = {
+  let cands = votes.uniq()
+  let counts = cands | ((c) => votes.count((x) => x == c))
+  match list.max(counts) {
+    None -> None
+    Some(m) -> match cands.filter((c) => votes.count((x) => x == c) == m) {
+      [w] -> Some(w)
+      _   -> None
+    }
+  }
+}

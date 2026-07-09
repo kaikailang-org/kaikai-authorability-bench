@@ -1,0 +1,22 @@
+fn chk(s: String, wx: Int, wy: Int) : Bool = match parse_coords(s) {
+  Some(p) -> p.x == wx and p.y == wy
+  None -> false
+}
+
+fn bad(s: String) : Bool = match parse_coords(s) {
+  Some(_) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = chk("3,-4", 3, -4) and
+    chk("0,0", 0, 0) and
+    chk("-12,7", -12, 7) and
+    bad("3,") and
+    bad("3, 4") and
+    bad("3.5,1") and
+    bad("--2,1") and
+    bad("1,2,3") and
+    bad("")
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

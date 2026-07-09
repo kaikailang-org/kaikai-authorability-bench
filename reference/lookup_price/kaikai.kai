@@ -1,0 +1,6 @@
+pub type Item = { sku: Int, cents: Int }
+
+pub fn lookup_price(items: [Item], sku: Int) : Option[Int] = match items {
+  [] -> None
+  [i, ...t] -> if i.sku == sku { Some(i.cents) } else { lookup_price(t, sku) }
+}

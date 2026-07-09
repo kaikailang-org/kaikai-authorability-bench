@@ -1,0 +1,10 @@
+fn main() : Int / Stdout = {
+  let ok = batch_withdraw(100, [30,50]) == Some(20) and
+    batch_withdraw(100, [30,80]) == None and
+    batch_withdraw(100, []) == Some(100) and
+    batch_withdraw(100, [100]) == Some(0) and
+    batch_withdraw(100, [0]) == None and
+    batch_withdraw(100, [-5]) == None and
+    batch_withdraw(0, [1]) == None
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}
