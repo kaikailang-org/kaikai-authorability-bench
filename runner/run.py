@@ -11,7 +11,7 @@ Modes:
 Language adapters define: how to assemble the work file, compile, and run.
 Exit code 0 + trailing "OK" on stdout = green.
 """
-import argparse, json, os, shutil, subprocess, sys, time
+import argparse, json, os, shlex, shutil, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -34,10 +34,14 @@ def asm_rust(d, sol, test):
             [str(d / "work")])
 
 def asm_go(d, sol, test):
-    # imports live in the test file, so: package, test, solution.
-    src = d / "work.go"
-    src.write_text("package main\n\n" + test + "\n" + sol)
-    return None, ["go", "run", str(src)]
+    # two files in package main so solution and test each keep their own
+    # imports; a leading `package` line in the solution is dropped.
+    lines = sol.lstrip().splitlines()
+    if lines and lines[0].startswith("package "):
+        lines = lines[1:]
+    (d / "sol.go").write_text("package main\n\n" + "\n".join(lines) + "\n")
+    (d / "test.go").write_text("package main\n\n" + test)
+    return None, ["go", "run", str(d / "test.go"), str(d / "sol.go")]
 
 ADAPTERS = {
     "kaikai": ("kaikai.kai", asm_kaikai),
@@ -116,53 +120,134 @@ PROMPT = """You are writing {lang} code. Implement exactly this function:
 Specification:
 {spec}
 
+{tools}
 Output ONLY the complete source (no fences, no prose). Do not write a main
 function or tests; the harness provides them. Previous attempt feedback, if
 any, follows:
 {feedback}
 """
 
-def agent_loop(agent_cmd, langs, seeds, max_rounds):
-    results = ROOT / "results" / f"run-{int(time.time())}.jsonl"
-    with results.open("w") as out:
+# Per-language toolchain interface exposed to the agent (README: "each
+# language gets its standard interface"). The agent runs with cwd set to an
+# empty scratch directory; hidden tests live outside it.
+TOOLS = {
+    "kaikai": "Your working directory is an empty scratch dir. You may probe "
+              "before answering: `kai run FILE` compiles and runs, "
+              "`kai info --json QUERY` queries language/stdlib reference, and "
+              "typed holes (`?name`) in code yield hole diagnostics.",
+    "rust":   "Your working directory is an empty scratch dir. You may probe "
+              "before answering: `rustc --edition 2021 FILE` checks that your "
+              "code compiles.",
+    "go":     "Your working directory is an empty scratch dir. You may probe "
+              "before answering: `go build` / `go vet` check that your code "
+              "compiles.",
+}
+
+def strip_fences(s):
+    s = s.strip()
+    if s.startswith("```"):
+        lines = s.splitlines()[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        s = "\n".join(lines)
+    return s
+
+def run_agent(agent_cmd, prompt, cwd, timeout):
+    """Invoke the agent once. Returns (ok, solution_or_error, tokens_in,
+    tokens_out, raw_stdout). Token counts come from claude-style JSON output
+    (`--output-format json`); plain stdout is taken verbatim as the solution
+    with unknown (None) token counts."""
+    rc, out, err = sh(agent_cmd + [prompt], cwd=cwd, timeout=timeout)
+    if rc != 0:
+        return False, f"AGENT ERROR (exit {rc}):\n{err[-1000:]}", None, None, out
+    sol, tin, tout = out, None, None
+    try:
+        d = json.loads(out)
+        if isinstance(d, dict) and "result" in d:
+            sol = d["result"]
+            u = d.get("usage", {})
+            tin = (u.get("input_tokens", 0) + u.get("cache_read_input_tokens", 0)
+                   + u.get("cache_creation_input_tokens", 0))
+            tout = u.get("output_tokens", 0)
+    except ValueError:
+        pass
+    return True, strip_fences(sol), tin, tout, out
+
+def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir):
+    """Run one task x language x seed to green or round cap. Writes the full
+    transcript; returns the summary record."""
+    sig = task["signatures"][lang]
+    fb, rounds, green = "(first attempt)", 0, False
+    tin = tout = 0
+    have_usage = False
+    transcript = []
+    for r in range(1, max_rounds + 1):
+        rounds = r
+        prompt = PROMPT.format(lang=lang, signature=sig, spec=task["prompt"],
+                               tools=TOOLS.get(lang, ""), feedback=fb)
+        base = run_dir / "work" / f"{task['id']}-{lang}-{seed}" / f"r{r}"
+        scratch = base / "scratch"
+        scratch.mkdir(parents=True, exist_ok=True)
+        t0 = time.time()
+        ok, sol, ti, to, raw = run_agent(agent_cmd, prompt, scratch, timeout)
+        if ti is not None:
+            tin += ti; tout += to; have_usage = True
+        entry = {"round": r, "prompt": prompt, "agent_raw": raw,
+                 "tokens_in": ti, "tokens_out": to,
+                 "duration_s": round(time.time() - t0, 1)}
+        if not ok:
+            fb = sol
+            entry["feedback"] = fb
+            transcript.append(entry)
+            continue
+        green, fb = cell(task, lang, sol, base / "cell")
+        entry.update(solution=sol, green=green, feedback=fb)
+        transcript.append(entry)
+        if green:
+            break
+    tpath = run_dir / "transcripts" / f"{task['id']}-{lang}-{seed}.json"
+    tpath.write_text(json.dumps(transcript, indent=2))
+    return {"task": task["id"], "lang": lang, "seed": seed, "green": green,
+            "rounds": rounds,
+            "tokens_in": tin if have_usage else None,
+            "tokens_out": tout if have_usage else None}
+
+def agent_loop(agent_cmd, langs, seeds, max_rounds, timeout):
+    run_dir = ROOT / "results" / f"run-{int(time.time())}"
+    (run_dir / "transcripts").mkdir(parents=True)
+    meta = {"agent": agent_cmd, "langs": langs, "seeds": seeds,
+            "max_rounds": max_rounds,
+            "started": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
+    (run_dir / "meta.json").write_text(json.dumps(meta, indent=2))
+    with (run_dir / "results.jsonl").open("w") as out:
         for tf in sorted((ROOT / "tasks").glob("*.yaml")):
             task = load_task(tf)
             for lang in langs:
-                sig = task["signatures"].get(lang)
-                if not sig:
+                if not task["signatures"].get(lang):
                     continue
                 for seed in range(seeds):
-                    fb = "(first attempt)"
-                    rounds, green = 0, False
-                    for r in range(1, max_rounds + 1):
-                        rounds = r
-                        prompt = PROMPT.format(lang=lang, signature=sig,
-                                               spec=task["prompt"], feedback=fb)
-                        rc, sol, err = sh(agent_cmd + [prompt], timeout=600)
-                        if rc != 0:
-                            fb = f"AGENT ERROR: {err[-1000:]}"; continue
-                        d = ROOT / "results" / "agent-work" / f"{task['id']}-{lang}-{seed}-r{r}"
-                        green, fb = cell(task, lang, sol, d)
-                        if green:
-                            break
-                    rec = {"task": task["id"], "lang": lang, "seed": seed,
-                           "green": green, "rounds": rounds}
+                    rec = agent_cell(agent_cmd, task, lang, seed, max_rounds,
+                                     timeout, run_dir)
                     out.write(json.dumps(rec) + "\n"); out.flush()
                     print(rec)
-    print(f"results: {results}")
+    print(f"results: {run_dir}")
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--smoke", action="store_true")
-    ap.add_argument("--agent", help="agent command; prompt appended as last arg, e.g. 'claude -p'")
+    ap.add_argument("--agent", help="agent command; prompt appended as last arg, "
+                    "e.g. 'claude -p --output-format json --allowedTools Bash'")
     ap.add_argument("--langs", default="kaikai,rust,go")
     ap.add_argument("--seeds", type=int, default=5)
     ap.add_argument("--max-rounds", type=int, default=5)
+    ap.add_argument("--agent-timeout", type=int, default=600,
+                    help="seconds per agent invocation")
     a = ap.parse_args()
     langs = a.langs.split(",")
     if a.smoke:
         sys.exit(smoke(langs))
     elif a.agent:
-        agent_loop(a.agent.split(), langs, a.seeds, a.max_rounds)
+        agent_loop(shlex.split(a.agent), langs, a.seeds, a.max_rounds,
+                   a.agent_timeout)
     else:
         ap.print_help()
