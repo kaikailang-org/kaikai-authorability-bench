@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let ok = interleave([1,3,5], [2,4]) == [1,2,3,4,5] and
+    interleave([], [7,8]) == [7,8] and
+    interleave([1], []) == [1] and
+    interleave([], []) == [] and
+    interleave([1], [7,8,9]) == [1,7,8,9]
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

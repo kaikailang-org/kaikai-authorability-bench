@@ -1,0 +1,16 @@
+id: parse_duration
+tier: function
+freshness: fresh (duration-string parser, strict grammar)
+prompt: |
+  Parse a duration string like "2h30m15s" into total seconds. Components are
+  hours (h), minutes (m), seconds (s); each is a non-negative integer
+  immediately followed by its unit letter. Every component is optional, but
+  at least one must be present, they must appear in h, m, s order, each at
+  most once, and nothing else may appear in the string. Values need not be
+  below 60 ("90m" is 5400). On any invalid input return the language's
+  idiomatic absent value. Examples: "2h" -> 7200, "1h0m5s" -> 3605, and
+  "" / "5x" / "m5" / "1s1h" / "2h30" are all invalid.
+signatures:
+  kaikai: "pub fn parse_duration(s: String) : Option[Int]"
+  rust:   "pub fn parse_duration(s: &str) -> Option<i64>"
+  go:     "func ParseDuration(s string) (int64, bool)"

@@ -1,0 +1,11 @@
+id: debounce_signal
+tier: function
+freshness: fresh (dedup-consecutive with sensor-trace framing)
+prompt: |
+  A sensor emits a trace of integer readings. Debounce it: collapse every run
+  of consecutive equal readings into a single reading (keep the first of each
+  run), preserving order. Example: [4,4,7,7,7,4] -> [4,7,4]. Empty -> empty.
+signatures:
+  kaikai: "pub fn debounce(xs: [Int]) : [Int]"
+  rust:   "pub fn debounce(xs: &[i64]) -> Vec<i64>"
+  go:     "func Debounce(xs []int64) []int64"

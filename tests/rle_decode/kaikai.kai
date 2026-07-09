@@ -1,0 +1,7 @@
+fn main() : Int / Stdout = {
+  let ok = rle_decode([Run { v: 5, n: 3 }, Run { v: 2, n: 1 }]) == [5,5,5,2] and
+    rle_decode([]) == [] and
+    rle_decode([Run { v: 7, n: 0 }, Run { v: 1, n: 2 }]) == [1,1] and
+    rle_decode([Run { v: -3, n: 2 }]) == [-3,-3]
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

@@ -1,0 +1,4 @@
+pub fn count_peaks(xs: [Int]) : Int = match xs {
+  [a, b, c, ...t] -> (if b > a and b > c { 1 } else { 0 }) + count_peaks([b, c, ...t])
+  _ -> 0
+}

@@ -1,0 +1,12 @@
+id: interleave_playlists
+tier: function
+freshness: fresh (alternating merge with playlist framing)
+prompt: |
+  Merge two playlists (lists of track ids) by alternating tracks: first track
+  of a, first of b, second of a, second of b, and so on. When one playlist
+  runs out, append the rest of the other. Example: ([1,3,5], [2,4]) ->
+  [1,2,3,4,5].
+signatures:
+  kaikai: "pub fn interleave(a: [Int], b: [Int]) : [Int]"
+  rust:   "pub fn interleave(a: &[i64], b: &[i64]) -> Vec<i64>"
+  go:     "func Interleave(a, b []int64) []int64"

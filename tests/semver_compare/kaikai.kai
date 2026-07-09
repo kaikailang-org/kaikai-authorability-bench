@@ -1,0 +1,11 @@
+fn main() : Int / Stdout = {
+  let ok = semver_compare("1.2.3", "1.2.3") == Some(0) and
+    semver_compare("1.2.3", "1.10.0") == Some(-1) and
+    semver_compare("2.0.0", "1.9.9") == Some(1) and
+    semver_compare("1.2", "1.2.3") == None and
+    semver_compare("1.2.3", "1.2.x") == None and
+    semver_compare("1.2.3.4", "1.2.3") == None and
+    semver_compare("1.-2.3", "1.2.3") == None and
+    semver_compare("01.2.3", "1.2.3") == Some(0)
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

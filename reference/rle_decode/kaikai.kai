@@ -1,0 +1,8 @@
+pub type Run = { v: Int, n: Int }
+
+fn fill(v: Int, n: Int) : [Int] = if n <= 0 { [] } else { [v, ...fill(v, n - 1)] }
+
+pub fn rle_decode(runs: [Run]) : [Int] = match runs {
+  [] -> []
+  [r, ...t] -> fill(r.v, r.n) ++ rle_decode(t)
+}

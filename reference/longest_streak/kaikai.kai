@@ -1,0 +1,9 @@
+fn streak_go(days: [Bool], cur: Int, best: Int) : Int = match days {
+  [] -> best
+  [d, ...t] -> {
+    let c = if d { cur + 1 } else { 0 }
+    streak_go(t, c, if c > best { c } else { best })
+  }
+}
+
+pub fn longest_streak(days: [Bool]) : Int = streak_go(days, 0, 0)

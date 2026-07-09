@@ -1,0 +1,12 @@
+id: rotate_roster
+tier: function
+freshness: fresh-ish (left rotation with wrap, on-call roster framing)
+prompt: |
+  An on-call roster is a list of engineer ids. Rotate it left by k positions:
+  the first k ids move, in order, to the end. k >= 0 and may exceed the roster
+  length (rotation wraps: rotating by the length is the identity). An empty
+  roster stays empty. Example: rotate([1,2,3,4], 1) -> [2,3,4,1].
+signatures:
+  kaikai: "pub fn rotate(xs: [Int], k: Int) : [Int]"
+  rust:   "pub fn rotate(xs: &[i64], k: usize) -> Vec<i64>"
+  go:     "func Rotate(xs []int64, k int) []int64"

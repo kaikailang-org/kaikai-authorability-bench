@@ -1,0 +1,4 @@
+pub fn interleave(a: [Int], b: [Int]) : [Int] = match a {
+  [] -> b
+  [h, ...t] -> [h, ...interleave(b, t)]
+}

@@ -1,0 +1,11 @@
+id: longest_streak
+tier: function
+freshness: fresh-ish (longest run of true, habit-tracker framing)
+prompt: |
+  Given a list of daily flags (true = the user hit their step goal that day,
+  in chronological order), return the length of the longest run of
+  consecutive true days. Empty list or no true days -> 0.
+signatures:
+  kaikai: "pub fn longest_streak(days: [Bool]) : Int"
+  rust:   "pub fn longest_streak(days: &[bool]) -> i64"
+  go:     "func LongestStreak(days []bool) int64"

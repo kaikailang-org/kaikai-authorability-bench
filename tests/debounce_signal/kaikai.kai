@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let ok = debounce([4,4,7,7,7,4]) == [4,7,4] and
+    debounce([]) == [] and
+    debounce([9]) == [9] and
+    debounce([2,2,2,2]) == [2] and
+    debounce([1,2,3]) == [1,2,3]
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}
