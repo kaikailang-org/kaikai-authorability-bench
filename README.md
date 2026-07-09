@@ -67,7 +67,21 @@ tasks/<id>.yaml          task spec: prompt, signatures, notes
 reference/<id>/<lang>    reference solution — validates the task itself
 tests/<id>/<lang>        hidden test main: exit 0 = pass, prints OK
 runner/run.py            harness: --smoke (references) | --agent (LLM loop)
-results/                 JSONL per run + report
+results/run-<ts>/        one directory per run:
+  meta.json                agent command, langs, seeds, caps
+  results.jsonl            one record per cell: green, rounds, tokens
+  transcripts/<cell>.json  full per-round log: prompt, raw output, feedback
+  work/<cell>/r<N>/        scratch (agent cwd) + cell (harness compile dir)
+```
+
+The agent command is invoked once per round with the prompt as its last
+argument, cwd set to an empty per-round scratch directory so it can exercise
+the toolchain (hidden tests live elsewhere). If it emits claude-style JSON
+(`--output-format json`), token counts are read from `usage`; plain stdout is
+taken verbatim as the solution, token counts unknown. Example:
+
+```
+runner/run.py --agent 'claude -p --output-format json --allowedTools Bash' --seeds 5
 ```
 
 Every task ships with a reference solution per language; `--smoke` compiles and
