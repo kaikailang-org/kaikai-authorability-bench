@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = day_of_year(2024, 3, 1) == 61 and
+    day_of_year(2023, 3, 1) == 60 and
+    day_of_year(2000, 1, 1) == 1 and
+    day_of_year(1900, 3, 1) == 60 and
+    day_of_year(2024, 12, 31) == 366 and
+    day_of_year(2023, 12, 31) == 365
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

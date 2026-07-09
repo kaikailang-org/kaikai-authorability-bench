@@ -1,0 +1,8 @@
+pub type Paging = { pages: Int, last_page_items: Int }
+
+pub fn paginate(total: Int, page_size: Int) : Paging =
+  if total == 0 { Paging { pages: 0, last_page_items: 0 } }
+  else {
+    let pages = (total + page_size - 1) / page_size
+    Paging { pages: pages, last_page_items: total - (pages - 1) * page_size }
+  }

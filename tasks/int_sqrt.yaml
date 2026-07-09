@@ -1,0 +1,12 @@
+id: int_sqrt
+tier: function
+freshness: classic-algorithm (integer square root; no floats allowed)
+prompt: |
+  Return the integer square root of n: the largest non-negative integer r
+  with r*r <= n. Do not use floating point. n is between 0 and 10^12, so the
+  implementation must be better than counting up by one (e.g. binary search
+  on the answer). Examples: 0 -> 0, 8 -> 2, 9 -> 3, 10^12 -> 10^6.
+signatures:
+  kaikai: "pub fn int_sqrt(n: Int) : Int"
+  rust:   "pub fn int_sqrt(n: i64) -> i64"
+  go:     "func IntSqrt(n int64) int64"

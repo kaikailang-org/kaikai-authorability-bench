@@ -1,0 +1,13 @@
+id: window_max_sum
+tier: function
+freshness: fresh-ish (max window sum; k-day revenue framing)
+prompt: |
+  Given daily revenues and a window length k (k >= 1), return the maximum
+  total revenue over any k consecutive days. If there are fewer than k days,
+  return the language's idiomatic absent value. Values may be negative.
+  A scan recomputing each window (O(n*k)) is acceptable. Examples:
+  ([1,2,3,4], 2) -> 7; ([2,-1,2,3], 2) -> 5; ([1,2], 3) -> absent.
+signatures:
+  kaikai: "pub fn window_max_sum(xs: [Int], k: Int) : Option[Int]"
+  rust:   "pub fn window_max_sum(xs: &[i64], k: usize) -> Option<i64>"
+  go:     "func WindowMaxSum(xs []int64, k int) (int64, bool)"

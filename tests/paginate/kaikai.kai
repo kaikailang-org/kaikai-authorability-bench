@@ -1,0 +1,13 @@
+fn chk(total: Int, size: Int, wp: Int, wl: Int) : Bool = {
+  let p = paginate(total, size)
+  p.pages == wp and p.last_page_items == wl
+}
+
+fn main() : Int / Stdout = {
+  let ok = chk(10, 3, 4, 1) and
+    chk(9, 3, 3, 3) and
+    chk(0, 5, 0, 0) and
+    chk(1, 1, 1, 1) and
+    chk(5, 10, 1, 5)
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = temperature_swing([10,13,9]) == 4 and
+    temperature_swing([5]) == 0 and
+    temperature_swing([]) == 0 and
+    temperature_swing([-3,4]) == 7 and
+    temperature_swing([1,1,1]) == 0 and
+    temperature_swing([0,-10,5]) == 15
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

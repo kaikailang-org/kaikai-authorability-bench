@@ -1,0 +1,2 @@
+pub fn window_max_sum(xs: [Int], k: Int) : Option[Int] =
+  list.max(xs.windows(k) | (w) => w.foldl(0, (a, x) => a + x))

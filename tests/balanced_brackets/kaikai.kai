@@ -1,0 +1,10 @@
+fn main() : Int / Stdout = {
+  let ok = balanced_brackets("([]{})") == true and
+    balanced_brackets("f(a[0]) { return; }") == true and
+    balanced_brackets("([)]") == false and
+    balanced_brackets("(") == false and
+    balanced_brackets("") == true and
+    balanced_brackets(")(") == false and
+    balanced_brackets("no brackets at all") == true
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

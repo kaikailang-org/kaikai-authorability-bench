@@ -1,0 +1,11 @@
+id: digital_root
+tier: function
+freshness: classic-algorithm (digital root; training-data overlap likely)
+prompt: |
+  Compute the digital root of a non-negative integer: repeatedly replace the
+  number by the sum of its decimal digits until a single digit remains.
+  Examples: 0 -> 0, 9 -> 9, 942 -> 6 (9+4+2=15, 1+5=6), 132189 -> 6.
+signatures:
+  kaikai: "pub fn digital_root(n: Int) : Int"
+  rust:   "pub fn digital_root(n: i64) -> i64"
+  go:     "func DigitalRoot(n int64) int64"

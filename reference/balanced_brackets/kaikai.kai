@@ -1,0 +1,18 @@
+fn pair_of(o: Char, c: Char) : Bool =
+  (o == '(' and c == ')') or (o == '[' and c == ']') or (o == '{' and c == '}')
+
+fn walk(cs: [Char], stack: [Char]) : Bool = match cs {
+  [] -> stack.is_empty()
+  [c, ...t] ->
+    if c == '(' or c == '[' or c == '{' { walk(t, [c, ...stack]) }
+    else {
+      if c == ')' or c == ']' or c == '}' {
+        match stack {
+          [top, ...rest] -> if pair_of(top, c) { walk(t, rest) } else { false }
+          [] -> false
+        }
+      } else { walk(t, stack) }
+    }
+}
+
+pub fn balanced_brackets(s: String) : Bool = walk(s.chars(), [])

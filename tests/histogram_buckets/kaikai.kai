@@ -1,0 +1,7 @@
+fn main() : Int / Stdout = {
+  let ok = histogram_buckets([5,15,25,99,0,9]) == [3,1,1,0,0,0,0,0,0,1] and
+    histogram_buckets([]) == [0,0,0,0,0,0,0,0,0,0] and
+    histogram_buckets([10,19,90]) == [0,2,0,0,0,0,0,0,0,1] and
+    histogram_buckets([0]) == [1,0,0,0,0,0,0,0,0,0]
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}
