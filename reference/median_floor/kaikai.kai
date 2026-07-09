@@ -1,0 +1,14 @@
+pub fn median_floor(xs: [Int]) : Option[Int] = match xs {
+  [] -> None
+  _ -> {
+    let s = xs.sort()
+    let n = s.length()
+    if n % 2 == 1 { s.nth(n / 2) }
+    else {
+      match (s.nth(n / 2 - 1), s.nth(n / 2)) {
+        (Some(a), Some(b)) -> Some((a + b) / 2)
+        _ -> None
+      }
+    }
+  }
+}

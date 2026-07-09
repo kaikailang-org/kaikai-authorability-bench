@@ -1,0 +1,16 @@
+pub type Point = { x: Int, y: Int }
+
+fn digits_val(cs: [Char]) : Option[Int] = {
+  if cs.is_empty() { None }
+  else { if cs.all((c) => char.is_digit(c)) { Some(cs.foldl(0, (a, c) => a * 10 + (char_to_int(c) - 48))) } else { None } }
+}
+
+fn int_val(s: String) : Option[Int] = match s.chars() {
+  ['-', ...t] -> match digits_val(t) { Some(v) -> Some(0 - v) None -> None }
+  cs -> digits_val(cs)
+}
+
+pub fn parse_coords(s: String) : Option[Point] = match s.split(",") {
+  [xs, ys] -> Some(Point { x: int_val(xs)!, y: int_val(ys)! })
+  _ -> None
+}

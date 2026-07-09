@@ -1,0 +1,11 @@
+fn main() : Int / Stdout = {
+  let ok = parse_hex("0x1F") == Some(31) and
+    parse_hex("0xff") == Some(255) and
+    parse_hex("0x0") == Some(0) and
+    parse_hex("0xDeadBeef") == Some(3735928559) and
+    parse_hex("1F") == None and
+    parse_hex("0x") == None and
+    parse_hex("0xG1") == None and
+    parse_hex("") == None
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

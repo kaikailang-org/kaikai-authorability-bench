@@ -1,0 +1,14 @@
+id: parse_coords
+tier: function
+freshness: fresh (strict "x,y" coordinate parser into a record)
+prompt: |
+  Parse a coordinate string of the exact form "X,Y" where X and Y are decimal
+  integers, each optionally prefixed by a single minus sign, with no spaces
+  and no other characters. Return a point record; on any malformed input
+  return the language's idiomatic absent value. Examples: "3,-4" -> {x:3,
+  y:-4}; "0,0" -> {x:0,y:0}; "3," / "3, 4" / "3.5,1" / "--2,1" -> invalid.
+  Define the point record type with the exact shape given in the signature.
+signatures:
+  kaikai: "pub type Point = { x: Int, y: Int }  //  pub fn parse_coords(s: String) : Option[Point]"
+  rust:   "pub struct Point { pub x: i64, pub y: i64 }  //  pub fn parse_coords(s: &str) -> Option<Point>"
+  go:     "type Point struct { X, Y int64 }  //  func ParseCoords(s string) (Point, bool)"

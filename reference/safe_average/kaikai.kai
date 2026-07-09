@@ -1,0 +1,4 @@
+pub fn safe_average(xs: [Int]) : Option[Int] = match xs {
+  [] -> None
+  _  -> Some(xs.foldl(0, (a, x) => a + x) / xs.length())
+}

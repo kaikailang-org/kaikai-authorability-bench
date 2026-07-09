@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let ok = vote_winner([3,1,3,2,3]) == Some(3) and
+    vote_winner([1,2,1,2]) == None and
+    vote_winner([]) == None and
+    vote_winner([7]) == Some(7) and
+    vote_winner([5,5,4]) == Some(5)
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

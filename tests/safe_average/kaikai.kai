@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let ok = safe_average([1,2,4]) == Some(2) and
+    safe_average([]) == None and
+    safe_average([5]) == Some(5) and
+    safe_average([-7,0]) == Some(-3) and
+    safe_average([2,2,2,2]) == Some(2)
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

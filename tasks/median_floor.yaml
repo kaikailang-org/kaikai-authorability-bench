@@ -1,0 +1,13 @@
+id: median_floor
+tier: function
+freshness: classic shape with explicit even-case contract
+prompt: |
+  Return the median of a list of integers. Sort a copy; with an odd count
+  return the middle element; with an even count return the average of the two
+  middle elements using integer division truncating toward zero (the native
+  int division). Empty input has no median: return the language's idiomatic
+  absent value. Examples: [3,1,2] -> 2; [4,1,3,2] -> 2; [-3,-4] -> -3.
+signatures:
+  kaikai: "pub fn median_floor(xs: [Int]) : Option[Int]"
+  rust:   "pub fn median_floor(xs: &[i64]) -> Option<i64>"
+  go:     "func MedianFloor(xs []int64) (int64, bool)"

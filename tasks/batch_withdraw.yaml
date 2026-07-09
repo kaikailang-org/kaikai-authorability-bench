@@ -1,0 +1,14 @@
+id: batch_withdraw
+tier: function
+freshness: fresh (all-or-nothing fold with failure, banking framing)
+prompt: |
+  Process a batch of withdrawals against an account. Given a starting balance
+  (>= 0) and a list of withdrawal amounts, apply them in order and return the
+  final balance. The whole batch is rejected — return the language's
+  idiomatic absent value — if any amount is <= 0 or would overdraw the
+  balance at its turn. An empty batch leaves the balance unchanged.
+  Example: balance 100, [30,50] -> 20; balance 100, [30,80] -> rejected.
+signatures:
+  kaikai: "pub fn batch_withdraw(balance: Int, amounts: [Int]) : Option[Int]"
+  rust:   "pub fn batch_withdraw(balance: i64, amounts: &[i64]) -> Option<i64>"
+  go:     "func BatchWithdraw(balance int64, amounts []int64) (int64, bool)"

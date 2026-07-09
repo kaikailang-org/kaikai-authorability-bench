@@ -1,0 +1,12 @@
+id: safe_average
+tier: function
+freshness: fresh-ish (mean with explicit empty-case contract)
+prompt: |
+  Return the average of a list of integer sensor readings using integer
+  division truncating toward zero (the native int division of the language).
+  An empty list has no average: return the language's idiomatic absent value.
+  Example: [1,2,4] -> 2; [-7,0] -> -3.
+signatures:
+  kaikai: "pub fn safe_average(xs: [Int]) : Option[Int]"
+  rust:   "pub fn safe_average(xs: &[i64]) -> Option<i64>"
+  go:     "func SafeAverage(xs []int64) (int64, bool)"
