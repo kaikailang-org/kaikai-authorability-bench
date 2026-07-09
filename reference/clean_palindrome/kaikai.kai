@@ -1,0 +1,7 @@
+fn keep(c: Char) : Bool =
+  char.is_digit(c) or (c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z')
+
+pub fn clean_palindrome(s: String) : Bool = {
+  let cs = (s.chars() |? (c) => keep(c)) | (c) => char.to_lower(c)
+  cs == cs.reverse()
+}

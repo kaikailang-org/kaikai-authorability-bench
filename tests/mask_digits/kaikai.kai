@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = mask_digits("1234 5678 9012 3456") == "**** **** **** 3456" and
+    mask_digits("12-34-5") == "*2-34-5" and
+    mask_digits("12") == "12" and
+    mask_digits("") == "" and
+    mask_digits("abcd") == "abcd" and
+    mask_digits("12345") == "*2345"
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

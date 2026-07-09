@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let ok = initials("grace brewster hopper") == "GBH" and
+    initials(" ada   lovelace ") == "AL" and
+    initials("") == "" and
+    initials("x") == "X" and
+    initials("Alan Turing") == "AT"
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

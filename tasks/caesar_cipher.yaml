@@ -1,0 +1,13 @@
+id: caesar_cipher
+tier: function
+freshness: classic-algorithm (Caesar; training-data overlap likely)
+prompt: |
+  Apply a Caesar shift of k to a string: ASCII letters rotate within their
+  case ('z' + 1 wraps to 'a', 'Z' + 1 to 'A'); every other character is
+  unchanged. k may be any integer, including negative or larger than 26
+  (shift by k mod 26). Examples: ("abc", 1) -> "bcd", ("xyz", 3) -> "abc",
+  ("abc", -1) -> "zab", ("Hello, World!", 13) -> "Uryyb, Jbeyq!".
+signatures:
+  kaikai: "pub fn caesar(s: String, k: Int) : String"
+  rust:   "pub fn caesar(s: &str, k: i64) -> String"
+  go:     "func Caesar(s string, k int64) string"

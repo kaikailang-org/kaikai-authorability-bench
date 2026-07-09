@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = clean_palindrome("A man, a plan, a canal: Panama") == true and
+    clean_palindrome("race a car") == false and
+    clean_palindrome("") == true and
+    clean_palindrome("12 21") == true and
+    clean_palindrome("No 'x' in Nixon") == true and
+    clean_palindrome("1a2") == false
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

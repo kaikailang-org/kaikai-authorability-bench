@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = slugify("Hello, World!") == "hello-world" and
+    slugify("  42 is  GREAT ") == "42-is-great" and
+    slugify("---") == "" and
+    slugify("") == "" and
+    slugify("already-good") == "already-good" and
+    slugify("A") == "a"
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

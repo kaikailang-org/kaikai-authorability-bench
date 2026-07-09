@@ -1,0 +1,12 @@
+id: slugify
+tier: function
+freshness: fresh-ish (URL slug normalizer, strict collapse rules)
+prompt: |
+  Turn a title into a URL slug. Keep ASCII letters (lowercased) and digits;
+  replace every maximal run of any other characters with a single dash; the
+  result has no leading or trailing dash. Examples: "Hello, World!" ->
+  "hello-world", "  42 is  GREAT " -> "42-is-great", "---" -> "", "" -> "".
+signatures:
+  kaikai: "pub fn slugify(s: String) : String"
+  rust:   "pub fn slugify(s: &str) -> String"
+  go:     "func Slugify(s string) string"

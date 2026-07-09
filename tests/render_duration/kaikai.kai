@@ -1,0 +1,10 @@
+fn main() : Int / Stdout = {
+  let ok = render_duration(3725) == "1h02m05s" and
+    render_duration(90) == "1m30s" and
+    render_duration(5) == "5s" and
+    render_duration(0) == "0s" and
+    render_duration(3600) == "1h00m00s" and
+    render_duration(60) == "1m00s" and
+    render_duration(45296) == "12h34m56s"
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

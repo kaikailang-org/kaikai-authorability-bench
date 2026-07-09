@@ -1,0 +1,13 @@
+id: mask_digits
+tier: function
+freshness: fresh (PAN masking rule, payments framing)
+prompt: |
+  Mask a payment card string for display: every digit except the last four
+  digits (counting digits only, from the right) is replaced by '*'; all
+  non-digit characters pass through unchanged. Strings with four or fewer
+  digits are returned unchanged. Examples: "1234 5678 9012 3456" ->
+  "**** **** **** 3456", "12-34-5" -> "*2-34-5", "12" -> "12", "" -> "".
+signatures:
+  kaikai: "pub fn mask_digits(s: String) : String"
+  rust:   "pub fn mask_digits(s: &str) -> String"
+  go:     "func MaskDigits(s string) string"

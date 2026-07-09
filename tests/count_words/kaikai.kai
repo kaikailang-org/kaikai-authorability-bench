@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = count_words("  hello   world ") == 2 and
+    count_words("") == 0 and
+    count_words("   ") == 0 and
+    count_words("one") == 1 and
+    count_words("a\tb") == 2 and
+    count_words("a b c d") == 4
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

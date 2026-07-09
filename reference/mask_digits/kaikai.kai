@@ -1,0 +1,13 @@
+fn mask_walk(cs: [Char], to_mask: Int) : [Char] = match cs {
+  [] -> []
+  [c, ...t] ->
+    if char.is_digit(c) {
+      if to_mask > 0 { ['*', ...mask_walk(t, to_mask - 1)] } else { [c, ...mask_walk(t, 0)] }
+    } else { [c, ...mask_walk(t, to_mask)] }
+}
+
+pub fn mask_digits(s: String) : String = {
+  let nd = s.chars().count((c) => char.is_digit(c))
+  let masked = mask_walk(s.chars(), if nd > 4 { nd - 4 } else { 0 })
+  (masked | (c) => "#{c}").join("")
+}
