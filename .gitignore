@@ -1,5 +1,1 @@
-results/smoke-run/
-results/agent-work/
-results/smoke/
-*.out
-*.err
+__pycache__/

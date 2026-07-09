@@ -48,6 +48,15 @@ holes / flattened (traditional-style) diagnostics. This separates the *tooling*
 effect from the *language prior* effect, turning "designed for LLMs" from a
 slogan into a measured coefficient.
 
+Select with `--config full|no-info|no-holes|flat-diags` (one run per config;
+other languages are unaffected). Enforcement is a generated `kai` shim on the
+agent's PATH, not just prompt wording: `no-info` rejects `kai info`/`kai doc`,
+`no-holes` rejects the `--holes*` flags, `flat-diags` rejects `--diags-json`
+and reduces every diagnostic — the agent's own probes and the harness feedback
+alike — to traditional `file:line:col: error: message` one-liners. The prompt's
+tool list shrinks to match, and the config is recorded in `meta.json` and every
+result record.
+
 ## Task tiers
 
 1. **Function level** (~50 target; 5 pilot tasks here) — the Tier 3 claim
