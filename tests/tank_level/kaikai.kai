@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = tank_level(10, [7,7,-20,3]) == 3 and
+    tank_level(10, []) == 0 and
+    tank_level(0, [5,-2]) == 0 and
+    tank_level(100, [30,30]) == 60 and
+    tank_level(5, [9]) == 5 and
+    tank_level(5, [-3]) == 0
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

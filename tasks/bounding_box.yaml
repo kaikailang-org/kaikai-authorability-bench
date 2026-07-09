@@ -1,0 +1,12 @@
+id: bounding_box
+tier: function
+freshness: fresh-ish (min/max fold into a record, geometry framing)
+prompt: |
+  Given a list of 2D points, return the smallest axis-aligned bounding box
+  that contains them all, as a record with the minimum and maximum of each
+  axis. No points -> the language's idiomatic absent value. Define both
+  record types with the exact shapes given in the signature.
+signatures:
+  kaikai: "pub type Point = { x: Int, y: Int }  //  pub type Box = { min_x: Int, min_y: Int, max_x: Int, max_y: Int }  //  pub fn bounding_box(ps: [Point]) : Option[Box]"
+  rust:   "pub struct Point { pub x: i64, pub y: i64 }  //  pub struct Box { pub min_x: i64, pub min_y: i64, pub max_x: i64, pub max_y: i64 }  //  pub fn bounding_box(ps: &[Point]) -> Option<Box>"
+  go:     "type Point struct { X, Y int64 }  //  type Box struct { MinX, MinY, MaxX, MaxY int64 }  //  func BoundingBox(ps []Point) (Box, bool)"

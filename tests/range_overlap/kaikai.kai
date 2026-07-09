@@ -1,0 +1,18 @@
+fn chk(a: Range, b: Range, ws: Int, wf: Int) : Bool = match range_overlap(a, b) {
+  Some(r) -> r.start == ws and r.finish == wf
+  None -> false
+}
+
+fn none_of(a: Range, b: Range) : Bool = match range_overlap(a, b) {
+  Some(_) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = chk(Range { start: 1, finish: 5 }, Range { start: 3, finish: 8 }, 3, 5) and
+    none_of(Range { start: 1, finish: 3 }, Range { start: 3, finish: 5 }) and
+    none_of(Range { start: 1, finish: 2 }, Range { start: 8, finish: 9 }) and
+    chk(Range { start: 2, finish: 9 }, Range { start: 3, finish: 4 }, 3, 4) and
+    chk(Range { start: 3, finish: 8 }, Range { start: 1, finish: 5 }, 3, 5)
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

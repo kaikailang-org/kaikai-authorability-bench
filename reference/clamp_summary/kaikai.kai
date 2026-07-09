@@ -1,0 +1,10 @@
+pub type Clamped = { values: [Int], changed: Int }
+
+fn clamp(x: Int, lo: Int, hi: Int) : Int =
+  if x < lo { lo } else { if x > hi { hi } else { x } }
+
+pub fn clamp_summary(xs: [Int], lo: Int, hi: Int) : Clamped = {
+  let vs = xs | (x) => clamp(x, lo, hi)
+  let n = xs.count((x) => x < lo or x > hi)
+  Clamped { values: vs, changed: n }
+}

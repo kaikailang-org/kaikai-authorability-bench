@@ -1,0 +1,13 @@
+id: inventory_low
+tier: function
+freshness: fresh (filter-project over records, warehouse framing)
+prompt: |
+  A warehouse inventory is a list of stock entries, each with a numeric sku
+  and a quantity on hand. Return the skus whose quantity is strictly below
+  the given threshold, preserving input order (duplicated skus stay
+  duplicated). Define the entry record type with the exact shape given in
+  the signature.
+signatures:
+  kaikai: "pub type Stock = { sku: Int, qty: Int }  //  pub fn inventory_low(stock: [Stock], threshold: Int) : [Int]"
+  rust:   "pub struct Stock { pub sku: i64, pub qty: i64 }  //  pub fn inventory_low(stock: &[Stock], threshold: i64) -> Vec<i64>"
+  go:     "type Stock struct { Sku, Qty int64 }  //  func InventoryLow(stock []Stock, threshold int64) []int64"

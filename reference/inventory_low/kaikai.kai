@@ -1,0 +1,4 @@
+pub type Stock = { sku: Int, qty: Int }
+
+pub fn inventory_low(stock: [Stock], threshold: Int) : [Int] =
+  (stock |? (s) => s.qty < threshold) | (s) => s.sku

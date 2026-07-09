@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let stock = [Stock { sku: 1, qty: 5 }, Stock { sku: 2, qty: 0 }, Stock { sku: 3, qty: 12 }, Stock { sku: 2, qty: 1 }]
+  let ok = inventory_low(stock, 5) == [2, 2] and
+    inventory_low(stock, 6) == [1, 2, 2] and
+    inventory_low(stock, 0) == [] and
+    inventory_low([], 10) == []
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

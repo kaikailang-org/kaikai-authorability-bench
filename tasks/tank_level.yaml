@@ -1,0 +1,13 @@
+id: tank_level
+tier: function
+freshness: fresh (saturating fold, water-tank framing)
+prompt: |
+  A water tank has capacity cap (>= 0) and starts empty. Apply a list of
+  signed flow deltas in order (positive = inflow, negative = outflow). The
+  level saturates at every step: overflow above cap spills away (level stays
+  cap), and outflow below 0 just empties the tank (level stays 0). Return
+  the final level. Example: cap 10, [7,7,-20,3] -> 3.
+signatures:
+  kaikai: "pub fn tank_level(cap: Int, deltas: [Int]) : Int"
+  rust:   "pub fn tank_level(cap: i64, deltas: &[i64]) -> i64"
+  go:     "func TankLevel(cap int64, deltas []int64) int64"

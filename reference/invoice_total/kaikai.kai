@@ -1,0 +1,4 @@
+pub type Line = { qty: Int, unit_cents: Int }
+
+pub fn invoice_total(lines: [Line]) : Int =
+  lines.foldl(0, (acc, l) => if l.qty <= 0 { acc } else { acc + l.qty * l.unit_cents })

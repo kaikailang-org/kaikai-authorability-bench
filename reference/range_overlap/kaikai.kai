@@ -1,0 +1,7 @@
+pub type Range = { start: Int, finish: Int }
+
+pub fn range_overlap(a: Range, b: Range) : Option[Range] = {
+  let lo = if a.start > b.start { a.start } else { b.start }
+  let hi = if a.finish < b.finish { a.finish } else { b.finish }
+  if lo < hi { Some(Range { start: lo, finish: hi }) } else { None }
+}

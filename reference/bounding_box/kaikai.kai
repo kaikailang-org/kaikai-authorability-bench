@@ -1,0 +1,17 @@
+pub type Point = { x: Int, y: Int }
+pub type Box = { min_x: Int, min_y: Int, max_x: Int, max_y: Int }
+
+fn grow(b: Box, ps: [Point]) : Box = match ps {
+  [] -> b
+  [p, ...t] -> grow(Box {
+    min_x: if p.x < b.min_x { p.x } else { b.min_x },
+    min_y: if p.y < b.min_y { p.y } else { b.min_y },
+    max_x: if p.x > b.max_x { p.x } else { b.max_x },
+    max_y: if p.y > b.max_y { p.y } else { b.max_y }
+  }, t)
+}
+
+pub fn bounding_box(ps: [Point]) : Option[Box] = match ps {
+  [] -> None
+  [p, ...t] -> Some(grow(Box { min_x: p.x, min_y: p.y, max_x: p.x, max_y: p.y }, t))
+}

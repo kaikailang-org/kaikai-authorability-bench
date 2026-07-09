@@ -1,0 +1,12 @@
+id: running_min_balance
+tier: function
+freshness: fresh (prefix-sum minimum, account-audit framing)
+prompt: |
+  An account starts at balance 0 and applies a list of signed transactions in
+  order (positive = deposit, negative = withdrawal). Return the lowest
+  balance the account ever reaches, counting the initial 0. Example:
+  [100,-30,-90,50] -> -20; [5,10] -> 0; [] -> 0.
+signatures:
+  kaikai: "pub fn running_min_balance(txs: [Int]) : Int"
+  rust:   "pub fn running_min_balance(txs: &[i64]) -> i64"
+  go:     "func RunningMinBalance(txs []int64) int64"

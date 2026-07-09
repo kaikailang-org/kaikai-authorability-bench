@@ -1,0 +1,13 @@
+pub type Range = { start: Int, finish: Int }
+
+fn merge_go(rs: [Range]) : [Range] = match rs {
+  [a, b, ...t] ->
+    if b.start <= a.finish {
+      let hi = if b.finish > a.finish { b.finish } else { a.finish }
+      merge_go([Range { start: a.start, finish: hi }, ...t])
+    } else { [a, ...merge_go([b, ...t])] }
+  x -> x
+}
+
+pub fn merge_ranges(rs: [Range]) : [Range] =
+  merge_go(rs.sort_by((x, y) => x.start - y.start))
