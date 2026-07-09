@@ -1,0 +1,12 @@
+id: rle_pairs
+tier: function
+freshness: classic shape, record-typed output
+prompt: |
+  Run-length encode a list of integers into a list of runs, where each run
+  records the value and how many consecutive times it appears, in input order.
+  Example: [5,5,5,2] -> [{v:5,n:3},{v:2,n:1}]. Empty input -> empty output.
+  Define the run record type with the exact shape given in the signature.
+signatures:
+  kaikai: "pub type Run = { v: Int, n: Int }  //  pub fn rle(xs: [Int]) : [Run]"
+  rust:   "pub struct Run { pub v: i64, pub n: i64 }  //  pub fn rle(xs: &[i64]) -> Vec<Run>"
+  go:     "type Run struct { V, N int64 }  //  func Rle(xs []int64) []Run"

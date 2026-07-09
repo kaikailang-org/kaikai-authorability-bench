@@ -1,0 +1,13 @@
+fn kadane(xs: [Int], cur: Int, best: Int) : Int = match xs {
+  [] -> best
+  [h, ...t] -> {
+    let cur2 = if cur + h > h { cur + h } else { h }
+    let best2 = if cur2 > best { cur2 } else { best }
+    kadane(t, cur2, best2)
+  }
+}
+
+pub fn max_subarray(xs: [Int]) : Int = match xs {
+  [] -> 0
+  [h, ...t] -> kadane(t, h, h)
+}

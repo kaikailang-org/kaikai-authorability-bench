@@ -1,0 +1,12 @@
+id: luhn_check
+tier: function
+freshness: classic-algorithm (training-data overlap likely for Rust/Go)
+prompt: |
+  Implement the Luhn checksum validation over a list of digits (most
+  significant first). Starting from the RIGHTMOST digit, double every second
+  digit; if doubling gives a value > 9, subtract 9. Sum everything. The list
+  is valid when the sum is a multiple of 10. An empty list is invalid.
+signatures:
+  kaikai: "pub fn luhn_check(digits: [Int]) : Bool"
+  rust:   "pub fn luhn_check(digits: &[i64]) -> bool"
+  go:     "func LuhnCheck(digits []int64) bool"

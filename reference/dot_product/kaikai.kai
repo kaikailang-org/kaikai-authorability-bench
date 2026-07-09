@@ -1,0 +1,11 @@
+pub fn dot_product(a: [Int], b: [Int]) : Option[Int] = match a {
+  [] -> match b { [] -> Some(0)
+                  _ -> None }
+  [x, ...xs] -> match b {
+    [] -> None
+    [y, ...ys] -> match dot_product(xs, ys) {
+      Some(r) -> Some(r + x * y)
+      None -> None
+    }
+  }
+}

@@ -1,0 +1,13 @@
+pub type Run = { v: Int, n: Int }
+
+fn rle_go(xs: [Int], cur: Int, cnt: Int) : [Run] = match xs {
+  [] -> [Run { v: cur, n: cnt }]
+  [h, ...t] ->
+    if h == cur { rle_go(t, cur, cnt + 1) }
+    else { [Run { v: cur, n: cnt }, ...rle_go(t, h, 1)] }
+}
+
+pub fn rle(xs: [Int]) : [Run] = match xs {
+  [] -> []
+  [h, ...t] -> rle_go(t, h, 1)
+}

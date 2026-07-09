@@ -1,0 +1,15 @@
+fn runs_eq(a: [Run], b: [Run]) : Bool = match a {
+  [] -> match b { [] -> true
+                  _ -> false }
+  [x, ...xs] -> match b {
+    [] -> false
+    [y, ...ys] -> if x.v == y.v and x.n == y.n { runs_eq(xs, ys) } else { false }
+  }
+}
+
+fn main() : Int / Stdout = {
+  let ok = runs_eq(rle([5,5,5,2]), [Run { v: 5, n: 3 }, Run { v: 2, n: 1 }]) and
+    runs_eq(rle([]), []) and
+    runs_eq(rle([1,2,2]), [Run { v: 1, n: 1 }, Run { v: 2, n: 2 }])
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

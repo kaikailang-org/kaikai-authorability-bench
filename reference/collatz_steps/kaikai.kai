@@ -1,0 +1,5 @@
+pub fn collatz_steps(n: Int) : Int =
+  if n == 1 { 0 } else {
+    let next = if n % 2 == 0 { n / 2 } else { 3 * n + 1 }
+    1 + collatz_steps(next)
+  }

@@ -1,0 +1,7 @@
+fn main() : Int / Stdout = {
+  let ok = collatz_steps(1) == 0 and
+    collatz_steps(2) == 1 and
+    collatz_steps(3) == 7 and
+    collatz_steps(27) == 111
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

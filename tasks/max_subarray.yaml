@@ -1,0 +1,10 @@
+id: max_subarray
+tier: function
+freshness: classic-algorithm (Kadane; training-data overlap likely)
+prompt: |
+  Return the maximum sum over all non-empty contiguous subarrays of the input.
+  For an empty input return 0. Elements may be negative.
+signatures:
+  kaikai: "pub fn max_subarray(xs: [Int]) : Int"
+  rust:   "pub fn max_subarray(xs: &[i64]) -> i64"
+  go:     "func MaxSubarray(xs []int64) int64"

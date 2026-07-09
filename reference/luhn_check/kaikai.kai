@@ -1,0 +1,13 @@
+fn luhn_sum(rev: [Int], i: Int, acc: Int) : Int = match rev {
+  [] -> acc
+  [d, ...rest] -> {
+    let doubled = d * 2
+    let dd = if i % 2 == 1 { if doubled > 9 { doubled - 9 } else { doubled } } else { d }
+    luhn_sum(rest, i + 1, acc + dd)
+  }
+}
+
+pub fn luhn_check(digits: [Int]) : Bool = match digits {
+  [] -> false
+  _  -> luhn_sum(list_reverse(digits), 0, 0) % 10 == 0
+}

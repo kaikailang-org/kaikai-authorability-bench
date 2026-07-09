@@ -1,0 +1,6 @@
+fn main() : Int / Stdout = {
+  let ok = dot_product([1,2,3], [4,5,6]) == Some(32) and
+    dot_product([1], []) == None and
+    dot_product([], []) == Some(0)
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

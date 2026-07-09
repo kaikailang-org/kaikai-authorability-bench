@@ -1,0 +1,10 @@
+id: collatz_steps
+tier: function
+freshness: classic
+prompt: |
+  Return how many steps the Collatz iteration takes to reach 1 from n
+  (n >= 1): even -> n/2, odd -> 3n+1. collatz_steps(1) = 0.
+signatures:
+  kaikai: "pub fn collatz_steps(n: Int) : Int"
+  rust:   "pub fn collatz_steps(n: i64) -> i64"
+  go:     "func CollatzSteps(n int64) int64"

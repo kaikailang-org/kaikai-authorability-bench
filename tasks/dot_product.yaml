@@ -1,0 +1,11 @@
+id: dot_product
+tier: function
+freshness: fresh-ish (Option-typed length mismatch)
+prompt: |
+  Compute the dot product of two integer lists. If the lists have different
+  lengths, signal the error through the language's idiomatic optional/error
+  return (no panic, no sentinel value). Two empty lists -> 0.
+signatures:
+  kaikai: "pub fn dot_product(a: [Int], b: [Int]) : Option[Int]"
+  rust:   "pub fn dot_product(a: &[i64], b: &[i64]) -> Option<i64>"
+  go:     "func DotProduct(a, b []int64) (int64, bool)"
