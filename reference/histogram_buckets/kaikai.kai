@@ -1,0 +1,2 @@
+pub fn histogram_buckets(xs: [Int]) : [Int] =
+  [0..9] | (b) => xs.count((x) => x / 10 == b)

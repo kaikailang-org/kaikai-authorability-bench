@@ -1,0 +1,11 @@
+id: histogram_buckets
+tier: function
+freshness: fresh (fixed decade bucketing, exam-scores framing)
+prompt: |
+  Bucket exam scores into decades. Scores are integers 0..99. Return a list
+  of exactly 10 counts: element i is how many scores fall in [10*i, 10*i+9].
+  Empty input -> ten zeros. Example: [5,15,25,99,0,9] -> [3,1,1,0,0,0,0,0,0,1].
+signatures:
+  kaikai: "pub fn histogram_buckets(xs: [Int]) : [Int]"
+  rust:   "pub fn histogram_buckets(xs: &[i64]) -> Vec<i64>"
+  go:     "func HistogramBuckets(xs []int64) []int64"

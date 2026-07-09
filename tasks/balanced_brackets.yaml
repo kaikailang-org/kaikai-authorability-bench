@@ -1,0 +1,13 @@
+id: balanced_brackets
+tier: function
+freshness: classic-algorithm (bracket matching; training-data overlap likely)
+prompt: |
+  Decide whether the brackets in a string are balanced. Bracket pairs are
+  (), [], {}. Every closer must match the most recent unmatched opener, and
+  no opener may remain unmatched. All non-bracket characters are ignored.
+  Examples: "([]{})" -> true, "f(a[0]) { return; }" -> true, "([)]" -> false,
+  "(" -> false, "" -> true.
+signatures:
+  kaikai: "pub fn balanced_brackets(s: String) : Bool"
+  rust:   "pub fn balanced_brackets(s: &str) -> bool"
+  go:     "func BalancedBrackets(s string) bool"

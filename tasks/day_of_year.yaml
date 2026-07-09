@@ -1,0 +1,12 @@
+id: day_of_year
+tier: function
+freshness: fresh-ish (Gregorian ordinal date; leap-year edge arithmetic)
+prompt: |
+  Given a valid Gregorian calendar date (year, month 1-12, day valid for the
+  month), return the ordinal day of the year, 1-based. Leap years: divisible
+  by 4, except centuries unless divisible by 400. Examples: (2024,3,1) -> 61,
+  (2023,3,1) -> 60, (2000,1,1) -> 1, (1900,3,1) -> 60, (2024,12,31) -> 366.
+signatures:
+  kaikai: "pub fn day_of_year(y: Int, m: Int, d: Int) : Int"
+  rust:   "pub fn day_of_year(y: i64, m: i64, d: i64) -> i64"
+  go:     "func DayOfYear(y, m, d int64) int64"

@@ -1,0 +1,14 @@
+id: paginate
+tier: function
+freshness: fresh (ceil-division edge cases, pagination framing)
+prompt: |
+  A listing has total items (>= 0) shown page_size (>= 1) at a time. Return
+  how many pages there are and how many items the last page holds, as a
+  record with the exact shape given in the signature. Zero items means zero
+  pages and zero items on the last page. Examples: (10, 3) -> {pages: 4,
+  last_page_items: 1}; (9, 3) -> {pages: 3, last_page_items: 3}; (0, 5) ->
+  {pages: 0, last_page_items: 0}.
+signatures:
+  kaikai: "pub type Paging = { pages: Int, last_page_items: Int }  //  pub fn paginate(total: Int, page_size: Int) : Paging"
+  rust:   "pub struct Paging { pub pages: i64, pub last_page_items: i64 }  //  pub fn paginate(total: i64, page_size: i64) -> Paging"
+  go:     "type Paging struct { Pages, LastPageItems int64 }  //  func Paginate(total, pageSize int64) Paging"

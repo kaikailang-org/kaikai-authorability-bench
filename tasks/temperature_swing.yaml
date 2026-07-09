@@ -1,0 +1,11 @@
+id: temperature_swing
+tier: function
+freshness: fresh (max adjacent absolute difference, weather framing)
+prompt: |
+  Given hourly temperature readings, return the largest absolute difference
+  between two consecutive readings. Fewer than two readings -> 0.
+  Examples: [10,13,9] -> 4, [5] -> 0, [] -> 0, [-3,4] -> 7.
+signatures:
+  kaikai: "pub fn temperature_swing(xs: [Int]) : Int"
+  rust:   "pub fn temperature_swing(xs: &[i64]) -> i64"
+  go:     "func TemperatureSwing(xs []int64) int64"

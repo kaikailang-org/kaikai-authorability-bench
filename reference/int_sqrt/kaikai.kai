@@ -1,0 +1,8 @@
+fn bs(lo: Int, hi: Int, n: Int) : Int =
+  if lo > hi { hi }
+  else {
+    let mid = (lo + hi) / 2
+    if mid * mid <= n { bs(mid + 1, hi, n) } else { bs(lo, mid - 1, n) }
+  }
+
+pub fn int_sqrt(n: Int) : Int = bs(0, if n < 1000000 { n } else { 1000000 }, n)

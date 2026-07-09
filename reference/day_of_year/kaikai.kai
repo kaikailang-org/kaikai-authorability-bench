@@ -1,0 +1,6 @@
+fn is_leap(y: Int) : Bool = (y % 4 == 0 and y % 100 != 0) or y % 400 == 0
+
+pub fn day_of_year(y: Int, m: Int, d: Int) : Int = {
+  let lens = [31, if is_leap(y) { 29 } else { 28 }, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  lens.take(m - 1).foldl(0, (a, x) => a + x) + d
+}

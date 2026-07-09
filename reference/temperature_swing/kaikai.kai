@@ -1,0 +1,8 @@
+pub fn temperature_swing(xs: [Int]) : Int = match xs {
+  [a, b, ...t] -> {
+    let d = if a > b { a - b } else { b - a }
+    let rest = temperature_swing([b, ...t])
+    if d > rest { d } else { rest }
+  }
+  _ -> 0
+}
