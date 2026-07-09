@@ -1,0 +1,5 @@
+pub fn debounce(xs: [Int]) : [Int] = match xs {
+  [] -> []
+  [h] -> [h]
+  [h, h2, ...t] -> if h == h2 { debounce([h2, ...t]) } else { [h, ...debounce([h2, ...t])] }
+}

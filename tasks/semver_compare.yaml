@@ -1,0 +1,15 @@
+id: semver_compare
+tier: function
+freshness: fresh-ish (strict three-part numeric version compare)
+prompt: |
+  Compare two version strings of the exact form "MAJOR.MINOR.PATCH": three
+  dot-separated non-negative decimal integers (digits only, no signs; leading
+  zeros allowed). Compare numerically, component by component from major to
+  patch, and return -1, 0, or 1 for a < b, a == b, a > b. If either string is
+  malformed (wrong number of parts, empty part, non-digit characters), return
+  the language's idiomatic absent value. Note "1.10.0" is greater than
+  "1.9.9".
+signatures:
+  kaikai: "pub fn semver_compare(a: String, b: String) : Option[Int]"
+  rust:   "pub fn semver_compare(a: &str, b: &str) -> Option<i64>"
+  go:     "func SemverCompare(a, b string) (int64, bool)"

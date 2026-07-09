@@ -1,0 +1,20 @@
+fn unit_secs(c: Char) : Option[Int] = match c {
+  'h' -> Some(3600)
+  'm' -> Some(60)
+  's' -> Some(1)
+  _   -> None
+}
+
+fn walk(cs: [Char], num: Int, has: Bool, last: Int, total: Int, any: Bool) : Option[Int] = match cs {
+  [] -> if has or not any { None } else { Some(total) }
+  [c, ...t] ->
+    if char.is_digit(c) { walk(t, num * 10 + (char_to_int(c) - 48), true, last, total, any) }
+    else {
+      match unit_secs(c) {
+        None -> None
+        Some(mult) -> if has and mult < last { walk(t, 0, false, mult, total + num * mult, true) } else { None }
+      }
+    }
+}
+
+pub fn parse_duration(s: String) : Option[Int] = walk(s.chars(), 0, false, 100000, 0, false)

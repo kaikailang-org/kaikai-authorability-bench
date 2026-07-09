@@ -1,0 +1,21 @@
+fn part_val(s: String) : Option[Int] = {
+  let cs = s.chars()
+  if cs.is_empty() { None }
+  else { if cs.all((c) => char.is_digit(c)) { Some(cs.foldl(0, (a, c) => a * 10 + (char_to_int(c) - 48))) } else { None } }
+}
+
+fn parse3(s: String) : Option[(Int, Int, Int)] = match s.split(".") {
+  [x, y, z] -> Some((part_val(x)!, part_val(y)!, part_val(z)!))
+  _ -> None
+}
+
+fn cmp_int(a: Int, b: Int) : Int = if a < b { -1 } else { if a > b { 1 } else { 0 } }
+
+pub fn semver_compare(a: String, b: String) : Option[Int] = {
+  let pa = parse3(a)!
+  let pb = parse3(b)!
+  let c1 = cmp_int(pa.fst, pb.fst)
+  let c2 = cmp_int(pa.snd, pb.snd)
+  let c3 = cmp_int(pa.trd, pb.trd)
+  if c1 != 0 { Some(c1) } else { if c2 != 0 { Some(c2) } else { Some(c3) } }
+}

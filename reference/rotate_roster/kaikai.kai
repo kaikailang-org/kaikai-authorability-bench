@@ -1,0 +1,7 @@
+pub fn rotate(xs: [Int], k: Int) : [Int] = match xs {
+  [] -> []
+  _ -> {
+    let r = k % xs.length()
+    xs.drop(r) ++ xs.take(r)
+  }
+}

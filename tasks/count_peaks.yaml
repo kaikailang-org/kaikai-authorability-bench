@@ -1,0 +1,12 @@
+id: count_peaks
+tier: function
+freshness: fresh-ish (strict local maxima, elevation-profile framing)
+prompt: |
+  An elevation profile is a list of heights. Count the peaks: positions that
+  are strictly higher than both immediate neighbors. Endpoints are never
+  peaks, and plateaus (equal neighbors) are not peaks. Fewer than 3 heights
+  -> 0. Example: [0,5,0,5,0] has 2 peaks.
+signatures:
+  kaikai: "pub fn count_peaks(xs: [Int]) : Int"
+  rust:   "pub fn count_peaks(xs: &[i64]) -> i64"
+  go:     "func CountPeaks(xs []int64) int64"

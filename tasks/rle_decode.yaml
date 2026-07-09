@@ -1,0 +1,13 @@
+id: rle_decode
+tier: function
+freshness: classic shape, record-typed input (inverse of rle_pairs)
+prompt: |
+  Decode a run-length encoding: each run holds a value and a count; expand it
+  to count copies of the value, in input order. A run with count 0 contributes
+  nothing; counts are never negative. Example: [{v:5,n:3},{v:2,n:1}] ->
+  [5,5,5,2]. Define the run record type with the exact shape given in the
+  signature.
+signatures:
+  kaikai: "pub type Run = { v: Int, n: Int }  //  pub fn rle_decode(runs: [Run]) : [Int]"
+  rust:   "pub struct Run { pub v: i64, pub n: i64 }  //  pub fn rle_decode(runs: &[Run]) -> Vec<i64>"
+  go:     "type Run struct { V, N int64 }  //  func RleDecode(runs []Run) []int64"
