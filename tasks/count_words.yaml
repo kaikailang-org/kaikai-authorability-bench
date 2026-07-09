@@ -1,0 +1,11 @@
+id: count_words
+tier: function
+freshness: classic shape with explicit whitespace contract
+prompt: |
+  Count the words in a line: a word is a maximal run of characters that are
+  neither space nor tab. Multiple separators between words are fine.
+  Examples: "  hello   world " -> 2, "" -> 0, "   " -> 0, "a\tb" -> 2.
+signatures:
+  kaikai: "pub fn count_words(s: String) : Int"
+  rust:   "pub fn count_words(s: &str) -> i64"
+  go:     "func CountWords(s string) int64"

@@ -1,0 +1,8 @@
+fn shift_char(c: Char, r: Int) : Char =
+  if c >= 'a' and c <= 'z' { int_to_char(97 + (char_to_int(c) - 97 + r) % 26) }
+  else { if c >= 'A' and c <= 'Z' { int_to_char(65 + (char_to_int(c) - 65 + r) % 26) } else { c } }
+
+pub fn caesar(s: String, k: Int) : String = {
+  let r = ((k % 26) + 26) % 26
+  (s.chars() | (c) => "#{shift_char(c, r)}").join("")
+}

@@ -1,0 +1,17 @@
+id: parse_kv
+tier: function
+freshness: fresh (strict key=value;... config-line parser)
+prompt: |
+  Parse a config line of the form "key=value;key=value;..." into a list of
+  entries, preserving order. Entries are separated by ';'. Each entry must
+  contain exactly one '='; the key must be non-empty; the value may be empty.
+  No trimming: characters are taken literally. The empty string parses to an
+  empty list. Anything else malformed (empty entry, missing or extra '=',
+  empty key) makes the whole parse fail: return the language's idiomatic
+  absent value. Examples: "a=1;b=2" -> [{a,1},{b,2}]; "a=" -> [{a,""}];
+  "" -> []; "=1" / "a" / "a=1;" / "a=b=c" -> invalid. Define the entry
+  record type with the exact shape given in the signature.
+signatures:
+  kaikai: "pub type Entry = { key: String, value: String }  //  pub fn parse_kv(s: String) : Option[[Entry]]"
+  rust:   "pub struct Entry { pub key: String, pub value: String }  //  pub fn parse_kv(s: &str) -> Option<Vec<Entry>>"
+  go:     "type Entry struct { Key, Value string }  //  func ParseKV(s string) ([]Entry, bool)"

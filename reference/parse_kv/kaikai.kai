@@ -1,0 +1,20 @@
+pub type Entry = { key: String, value: String }
+
+fn parse_entry(e: String) : Option[Entry] = match e.split("=") {
+  [k, v] -> if k.is_empty() { None } else { Some(Entry { key: k, value: v }) }
+  _ -> None
+}
+
+fn parse_all(es: [String]) : Option[[Entry]] = match es {
+  [] -> Some([])
+  [e, ...t] -> match parse_entry(e) {
+    None -> None
+    Some(en) -> match parse_all(t) {
+      None -> None
+      Some(rest) -> Some([en, ...rest])
+    }
+  }
+}
+
+pub fn parse_kv(s: String) : Option[[Entry]] =
+  if s.is_empty() { Some([]) } else { parse_all(s.split(";")) }

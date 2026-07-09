@@ -1,0 +1,15 @@
+id: render_duration
+tier: function
+freshness: fresh (compact duration formatter with padding rules)
+prompt: |
+  Render a non-negative number of seconds as a compact duration string using
+  hours, minutes, seconds. Omit leading zero components: hours appear only if
+  nonzero; minutes appear if hours appear or minutes are nonzero; seconds
+  always appear. The first (leftmost) component is unpadded; every later
+  component is zero-padded to two digits. Unit letters are h, m, s with no
+  spaces. Examples: 3725 -> "1h02m05s", 90 -> "1m30s", 5 -> "5s", 0 -> "0s",
+  3600 -> "1h00m00s", 60 -> "1m00s".
+signatures:
+  kaikai: "pub fn render_duration(total: Int) : String"
+  rust:   "pub fn render_duration(total: i64) -> String"
+  go:     "func RenderDuration(total int64) string"

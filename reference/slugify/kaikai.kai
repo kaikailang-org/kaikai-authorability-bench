@@ -1,0 +1,22 @@
+fn slug_char(c: Char) : Char =
+  if char.is_digit(c) { c }
+  else { if c >= 'a' and c <= 'z' { c }
+  else { if c >= 'A' and c <= 'Z' { char.to_lower(c) }
+  else { '-' } } }
+
+fn squeeze(cs: [Char]) : [Char] = match cs {
+  ['-', '-', ...t] -> squeeze(['-', ...t])
+  [c, ...t] -> [c, ...squeeze(t)]
+  [] -> []
+}
+
+fn drop_lead(cs: [Char]) : [Char] = match cs {
+  ['-', ...t] -> t
+  x -> x
+}
+
+pub fn slugify(s: String) : String = {
+  let sq = squeeze(s.chars() | (c) => slug_char(c))
+  let cs = drop_lead(drop_lead(sq.reverse()).reverse())
+  (cs | (c) => "#{c}").join("")
+}

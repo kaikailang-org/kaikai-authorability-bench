@@ -1,0 +1,9 @@
+fn cw(cs: [Char], in_word: Bool, n: Int) : Int = match cs {
+  [] -> n
+  [c, ...t] -> {
+    let sp = c == ' ' or c == '\t'
+    if sp { cw(t, false, n) } else { cw(t, true, if in_word { n } else { n + 1 }) }
+  }
+}
+
+pub fn count_words(s: String) : Int = cw(s.chars(), false, 0)

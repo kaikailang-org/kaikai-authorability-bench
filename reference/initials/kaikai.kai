@@ -1,0 +1,7 @@
+fn first_upper(w: String) : String = match w.chars() {
+  [c, ..._] -> "#{char.to_upper(c)}"
+  _ -> ""
+}
+
+pub fn initials(name: String) : String =
+  ((name.split(" ") |? (w) => not w.is_empty()) | (w) => first_upper(w)).join("")

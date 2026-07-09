@@ -1,0 +1,12 @@
+id: clean_palindrome
+tier: function
+freshness: classic-algorithm (alnum palindrome; training-data overlap likely)
+prompt: |
+  Decide whether a string is a palindrome after keeping only ASCII letters
+  and digits and lowercasing the letters. The empty result counts as a
+  palindrome. Examples: "A man, a plan, a canal: Panama" -> true,
+  "race a car" -> false, "" -> true, "12 21" -> true.
+signatures:
+  kaikai: "pub fn clean_palindrome(s: String) : Bool"
+  rust:   "pub fn clean_palindrome(s: &str) -> bool"
+  go:     "func CleanPalindrome(s string) bool"

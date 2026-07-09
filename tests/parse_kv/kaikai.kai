@@ -1,0 +1,30 @@
+fn entries_eq(a: [Entry], b: [Entry]) : Bool = match a {
+  [] -> match b { [] -> true
+                  _ -> false }
+  [x, ...xs] -> match b {
+    [] -> false
+    [y, ...ys] -> if x.key == y.key and x.value == y.value { entries_eq(xs, ys) } else { false }
+  }
+}
+
+fn good(s: String, want: [Entry]) : Bool = match parse_kv(s) {
+  Some(es) -> entries_eq(es, want)
+  None -> false
+}
+
+fn bad(s: String) : Bool = match parse_kv(s) {
+  Some(_) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = good("a=1;b=2", [Entry { key: "a", value: "1" }, Entry { key: "b", value: "2" }]) and
+    good("a=", [Entry { key: "a", value: "" }]) and
+    good("", []) and
+    good("host=localhost", [Entry { key: "host", value: "localhost" }]) and
+    bad("=1") and
+    bad("a") and
+    bad("a=1;") and
+    bad("a=b=c")
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

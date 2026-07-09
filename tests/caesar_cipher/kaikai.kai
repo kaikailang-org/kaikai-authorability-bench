@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = caesar("abc", 1) == "bcd" and
+    caesar("xyz", 3) == "abc" and
+    caesar("abc", -1) == "zab" and
+    caesar("Hello, World!", 13) == "Uryyb, Jbeyq!" and
+    caesar("abc", 26) == "abc" and
+    caesar("", 5) == ""
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

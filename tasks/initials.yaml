@@ -1,0 +1,13 @@
+id: initials
+tier: function
+freshness: fresh (word-initial extraction, name-badge framing)
+prompt: |
+  Build the initials for a name badge: take the first character of each
+  space-separated word, uppercased, concatenated. Multiple spaces between
+  words are allowed; leading/trailing spaces too. Words are non-empty runs
+  of non-space characters. Examples: "grace brewster hopper" -> "GBH",
+  " ada   lovelace " -> "AL", "" -> "".
+signatures:
+  kaikai: "pub fn initials(name: String) : String"
+  rust:   "pub fn initials(name: &str) -> String"
+  go:     "func Initials(name string) string"
