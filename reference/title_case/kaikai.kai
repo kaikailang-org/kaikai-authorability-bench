@@ -1,0 +1,11 @@
+fn tc(cs: [Char], in_word: Bool) : [Char] = match cs {
+  [] -> []
+  [c, ...t] ->
+    if c == ' ' { [c, ...tc(t, false)] }
+    else {
+      let o = if in_word { char.to_lower(c) } else { char.to_upper(c) }
+      [o, ...tc(t, true)]
+    }
+}
+
+pub fn title_case(s: String) : String = (tc(s.chars(), false) | (c) => "#{c}").join("")

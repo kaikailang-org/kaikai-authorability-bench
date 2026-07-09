@@ -1,0 +1,9 @@
+fn main() : Int / Stdout = {
+  let ok = alternating_sum([10,3,2]) == 9 and
+    alternating_sum([5,5]) == 0 and
+    alternating_sum([7]) == 7 and
+    alternating_sum([]) == 0 and
+    alternating_sum([1,2,3,4]) == -2 and
+    alternating_sum([-1,-2]) == 1
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

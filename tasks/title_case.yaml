@@ -1,0 +1,14 @@
+id: title_case
+tier: function
+freshness: fresh-ish (title caser preserving exact spacing)
+prompt: |
+  Title-case a line: for each word (maximal run of non-space characters),
+  uppercase its first character and lowercase the rest; ASCII letters only,
+  other characters pass through unchanged by the case rules. Spaces are
+  preserved exactly as in the input. Examples: "hello WORLD" ->
+  "Hello World", "  a  b " -> "  A  B ", "3rd place" -> "3rd Place",
+  "" -> "".
+signatures:
+  kaikai: "pub fn title_case(s: String) : String"
+  rust:   "pub fn title_case(s: &str) -> String"
+  go:     "func TitleCase(s string) string"

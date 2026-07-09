@@ -1,0 +1,7 @@
+pub type Score = { id: Int, points: Int }
+
+fn rank_cmp(a: (Int, Score), b: (Int, Score)) : Int =
+  if b.snd.points != a.snd.points { b.snd.points - a.snd.points } else { a.fst - b.fst }
+
+pub fn leaderboard_top3(scores: [Score]) : [Int] =
+  (scores.enumerate().sort_by((a, b) => rank_cmp(a, b)) | (p) => p.snd.id).take(3)

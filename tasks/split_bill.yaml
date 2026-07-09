@@ -1,0 +1,13 @@
+id: split_bill
+tier: function
+freshness: fresh (remainder distribution, bill-splitting framing)
+prompt: |
+  Split a bill of total cents (>= 0) among n people (n >= 1) so the shares
+  sum exactly to the total and differ by at most one cent: everyone pays the
+  truncated share total/n, and the first total%n people (in order) pay one
+  extra cent. Return the n shares in order. Examples: (100, 3) ->
+  [34,33,33]; (100, 4) -> [25,25,25,25]; (5, 6) -> [1,1,1,1,1,0].
+signatures:
+  kaikai: "pub fn split_bill(total: Int, n: Int) : [Int]"
+  rust:   "pub fn split_bill(total: i64, n: i64) -> Vec<i64>"
+  go:     "func SplitBill(total, n int64) []int64"

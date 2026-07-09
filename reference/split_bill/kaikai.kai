@@ -1,0 +1,5 @@
+pub fn split_bill(total: Int, n: Int) : [Int] = {
+  let base = total / n
+  let r = total % n
+  [0..n - 1] | (i) => base + (if i < r { 1 } else { 0 })
+}

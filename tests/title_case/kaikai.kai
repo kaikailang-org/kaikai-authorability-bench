@@ -1,0 +1,8 @@
+fn main() : Int / Stdout = {
+  let ok = title_case("hello WORLD") == "Hello World" and
+    title_case("  a  b ") == "  A  B " and
+    title_case("3rd place") == "3rd Place" and
+    title_case("") == "" and
+    title_case("mIxEd CaSe") == "Mixed Case"
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

@@ -1,0 +1,11 @@
+id: alternating_sum
+tier: function
+freshness: fresh-ish (signed fold, ledger-audit framing)
+prompt: |
+  A ledger audit walks the amounts with alternating signs: add the first,
+  subtract the second, add the third, and so on. Return that alternating
+  sum. Empty -> 0. Examples: [10,3,2] -> 9, [5,5] -> 0, [7] -> 7.
+signatures:
+  kaikai: "pub fn alternating_sum(xs: [Int]) : Int"
+  rust:   "pub fn alternating_sum(xs: &[i64]) -> i64"
+  go:     "func AlternatingSum(xs []int64) int64"
