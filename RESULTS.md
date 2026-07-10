@@ -149,6 +149,39 @@ claude-sonnet-5 no-info        12   1.00    1.00    679597
   no-info (plus their full baselines) — where the reference should genuinely
   bite. ~80 cells on the calibration task set.
 
+## Module-tier pilots (3 modules × 3 languages × 3 models × 2 seeds)
+
+```
+model           lang     config      cells    s@1  rounds  tok/cell
+claude-fable-5  go       full            6   1.00    1.00    110681
+claude-fable-5  kaikai   full            6   1.00    1.00    284751
+claude-fable-5  rust     full            6   1.00    1.00    146666
+claude-opus-4-8 go       full            6   1.00    1.00    100520
+claude-opus-4-8 kaikai   full            6   1.00    1.00    627441
+claude-opus-4-8 rust     full            6   1.00    1.00     96716
+claude-sonnet-5 go       full            6   1.00    1.00    242016
+claude-sonnet-5 kaikai   full            6   0.83    1.17    817123
+claude-sonnet-5 rust     full            6   1.00    1.00    137160
+```
+
+- **The tier discriminates — barely, and honestly.** The bench's first
+  genuine LOGIC red: sonnet × inventory_ops × kaikai compiled but failed a
+  hidden assertion — it transplanted the imperative accumulator habit onto
+  cons lists and corrupted item order (`list_reverse([x, ...rest]) ++
+  list_reverse(acc)`). Round 2 rewrote to idiomatic structural recursion
+  and passed, recovering from a bare "FAIL" with no detail. Prior collision
+  at the *idiom* level, not the syntax level.
+- **kaikai module cost went DOWN vs hard functions for fable** (285k vs
+  500k): more code to write, but exploration amortizes over a bigger task.
+  The per-model gradient holds (opus 627k, sonnet 817k).
+- **The pilot caught a task bug**, which is what pilots are for: the rust
+  hidden test used `==`/`.clone()` on `Item`, silently requiring derives
+  the signature never declared — 6 false reds across all three models,
+  identical failure. Fixed to field-wise checks; cells re-run clean. Task
+  authoring rule extracted: hidden tests may demand nothing of the
+  interface beyond what the signature block states.
+- Sample is small (2 seeds, 3 modules): direction, not headline.
+
 ## Gaps left open (annotated for the next authoring pass)
 
 - **No Map/Set tasks.** kaikai has `%{}`/`%[]` literals, but Go needs
