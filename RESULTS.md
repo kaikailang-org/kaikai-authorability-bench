@@ -118,10 +118,36 @@ normalize_path/parse_csv_row budget; opus covered those 12 cells.)
   probing cost: fable ~500k, opus ~1.0M, sonnet ~1.6M tokens/cell (~4×, ~9×,
   ~5× their own mainstream-language cost). Every model closes the
   correctness gap with zero training prior — but weaker models buy that
-  correctness with far more toolchain interaction. This makes the
-  tooling-ablation × model grid the most promising next measurement: if
-  `no-info` hurts sonnet proportionally more than fable, "designed for
-  LLMs" is quantified as a per-model coefficient without needing red rounds.
+  correctness with far more toolchain interaction.
+
+## no-info ablation × model (hard batch, kaikai only, 2 seeds)
+
+```
+model           config      cells    s@1  rounds  tok/cell
+claude-fable-5  full           12   1.00    1.00    493786
+claude-fable-5  no-info        12   1.00    1.00    362941
+claude-opus-4-8 full           12   1.00    1.00   1031254
+claude-opus-4-8 no-info        12   0.92    1.08    443929
+claude-sonnet-5 full           12   1.00    1.00   1618727
+claude-sonnet-5 no-info        12   1.00    1.00    679597
+```
+
+- **On algorithm-heavy tasks, removing the reference makes every model
+  CHEAPER** (fable −26%, opus −57%, sonnet −58%) — the opposite sign of the
+  +26% no-info penalty fable showed on the stdlib-heavy calibration set.
+  When tasks barely touch stdlib, an available reference is a "curiosity
+  tax": weaker models in particular read documentation they don't need.
+  The no-info coefficient is task-dependent, keyed on stdlib surface — the
+  definitive task set needs both kinds, tagged.
+- **The benchmark's first genuine red round:** opus × iso_week × no-info
+  wrote `//` comments (Rust/Go prior); kaikai's diagnostic said exactly
+  what to do ("kaikai uses `#` for comments, not `//`") and round 2 was
+  green. Prior collision → caught by compiler → explained by diagnostic →
+  recovered in one round: the ratchet loop working end to end. Notably the
+  collision surfaced only with the reference removed.
+- **Unmeasured cell of the matrix:** stdlib-heavy tasks × opus/sonnet ×
+  no-info (plus their full baselines) — where the reference should genuinely
+  bite. ~80 cells on the calibration task set.
 
 ## Gaps left open (annotated for the next authoring pass)
 
