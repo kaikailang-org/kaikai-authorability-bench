@@ -49,22 +49,24 @@ vote_winner, merge_ranges, slugify, day_of_year, max_subarray, rle_decode.
 120 cells total (60 full across 3 languages + 60 kaikai ablation).
 
 ```
-lang     config      cells    s@1    s@2  rounds  tok/cell
-----------------------------------------------------------
-go       full           20   1.00   1.00    1.00    117165
-kaikai   flat-diags     20   1.00   1.00    1.00    423123
-kaikai   full           20   0.95   1.00    1.05    451510
-kaikai   no-holes       20   1.00   1.00    1.00    478251
-kaikai   no-info        20   1.00   1.00    1.00    568080
-rust     full           20   1.00   1.00    1.00    114415
+lang     config      cells    s@1  rounds  tok/cell
+---------------------------------------------------
+go       full           20   1.00    1.00    117165
+kaikai   flat-diags     20   1.00    1.00    423123
+kaikai   full           20   1.00    1.00    451510
+kaikai   no-holes       20   1.00    1.00    478251
+kaikai   no-info        20   1.00    1.00    568080
+rust     full           20   1.00    1.00    114415
 ```
+
+(Rounds are compile attempts: agent-infra errors — one timeout in this run —
+are logged as `agent_errors` and excluded from the metric.)
 
 Readings (n=20 per cell row; calibration-grade, not headline numbers):
 
 - **No language ever produced a red compile or failed test in 120 cells.**
-  kaikai's lone s@1 miss was an agent timeout (round 2 went green on the
-  first actual compile). At this task size, success@1 is saturated and does
-  not discriminate — harder tasks are what the metric needs.
+  At this task size, success@1 is saturated and does not discriminate —
+  harder tasks are what the metric needs.
 - **kaikai costs ~4× tokens/cell vs Rust/Go** (450k vs ~115k): the missing
   training prior is paid for in toolchain probing, not in extra rounds.
 - **`no-info` is the one ablation with a clear effect: +26% tokens** over
@@ -74,9 +76,21 @@ Readings (n=20 per cell row; calibration-grade, not headline numbers):
   unused at single-function size, and with everything green in round 1 the
   harness feedback channel (where rich diagnostics would matter) is nearly
   never exercised. These two ablations need red rounds to discriminate.
-- **Ops note:** agent errors (timeouts) currently consume a round and dent
-  success@1, conflating infra flakiness with language DX — worth recording
-  `agent_errors` separately in the cell record before the full grid.
+
+## Hard batch probe (6 edge-dense tasks × 3 languages × 2 seeds, full config)
+
+New tasks written to force red rounds: eval_rpn, parse_csv_row,
+base64_encode, iso_week, normalize_path, min_rooms. The run hit the
+account's monthly spend limit partway: normalize_path and parse_csv_row
+never reached the model (12 cells excluded as infra), so the two most
+promising discriminators are still unmeasured.
+
+Of the 24 cells that ran (base64_encode, eval_rpn, iso_week, min_rooms):
+**still green in round 1 everywhere, all three languages** — including
+ISO-8601 week numbering from scratch. kaikai's probing cost rose to ~500k
+tokens/cell (vs ~105-129k for Go/Rust). Even edge-dense single functions
+don't yet produce reds for this model; the discriminating pressure likely
+needs the module tier or a deliberately unfamiliar API surface.
 
 ## Gaps left open (annotated for the next authoring pass)
 
