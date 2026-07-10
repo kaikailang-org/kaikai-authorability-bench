@@ -1,0 +1,55 @@
+fn bal(l: [Account], id: Int, want: Int) : Bool = match balance_of(l, id) {
+  Some(v) -> v == want
+  None -> false
+}
+
+fn bad(x: Option[[Account]]) : Bool = match x {
+  Some(_v) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = match open_account([], 1) {
+    None -> false
+    Some(l1) -> match open_account(l1, 2) {
+      None -> false
+      Some(l2) -> {
+        let shape = match l2 {
+          [a, b] -> a.id == 1 and b.id == 2
+          _ -> false
+        }
+        let no_dup = bad(open_account(l2, 1))
+        match deposit(l2, 1, 100) {
+          None -> false
+          Some(l3) -> match transfer(l3, 1, 2, 40) {
+            None -> false
+            Some(l4) -> {
+              let moved = bal(l4, 1, 60) and bal(l4, 2, 40)
+              let invalids = bad(transfer(l4, 2, 2, 10)) and
+                bad(transfer(l4, 1, 9, 10)) and
+                bad(transfer(l4, 9, 1, 10)) and
+                bad(transfer(l4, 2, 1, 41)) and
+                bad(transfer(l4, 1, 2, 0))
+              let drained = match withdraw(l4, 2, 40) {
+                None -> false
+                Some(l5) -> bal(l5, 2, 0) and
+                  bad(withdraw(l5, 2, 1)) and
+                  bad(withdraw(l5, 1, 0)) and
+                  bad(withdraw(l5, 3, 5)) and
+                  bad(deposit(l5, 1, 0 - 5)) and
+                  bad(deposit(l5, 42, 5))
+              }
+              let pure = bal(l4, 1, 60) and bal(l4, 2, 40)
+              let missing = match balance_of(l4, 99) {
+                Some(_v) -> false
+                None -> true
+              }
+              shape and no_dup and moved and invalids and drained and pure and missing
+            }
+          }
+        }
+      }
+    }
+  }
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

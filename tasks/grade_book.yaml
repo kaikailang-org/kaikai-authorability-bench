@@ -1,0 +1,36 @@
+id: grade_book
+tier: module
+freshness: fresh (grade book with floor-average and unique-max rules)
+prompt: |
+  Implement a grade book. It is a list of students with unique ids, each
+  holding the scores they have received in order. Operations are pure
+  (return a NEW book, order preserved); invalid operations return the
+  idiomatic absent value.
+  - add_score(book, id, score): appends the score to the student's list;
+    when the id is absent, first appends a new student (empty scores) at
+    the END of the book, then records the score. Invalid when the score is
+    outside 0..100.
+  - average_floor(book, id): the student's mean score rounded DOWN
+    (floor; scores are never negative). Absent when the id is missing or
+    the student has no scores.
+  - top_student(book): the id whose average_floor is strictly greater than
+    every other student's. Students without scores are ignored. Absent
+    when no student has scores or the highest floored average is shared.
+  Example: scores 90,95 -> average 92; scores 90,95,92 -> 92 (277/3
+  floors); two students both flooring to 92 -> no top student.
+signatures:
+  kaikai: |
+    pub type Student = { id: Int, scores: [Int] }
+    pub fn add_score(book: [Student], id: Int, score: Int) : Option[[Student]]
+    pub fn average_floor(book: [Student], id: Int) : Option[Int]
+    pub fn top_student(book: [Student]) : Option[Int]
+  rust: |
+    pub struct Student { pub id: i64, pub scores: Vec<i64> }
+    pub fn add_score(book: &[Student], id: i64, score: i64) -> Option<Vec<Student>>
+    pub fn average_floor(book: &[Student], id: i64) -> Option<i64>
+    pub fn top_student(book: &[Student]) -> Option<i64>
+  go: |
+    type Student struct { Id int64; Scores []int64 }
+    func AddScore(book []Student, id, score int64) ([]Student, bool)
+    func AverageFloor(book []Student, id int64) (int64, bool)
+    func TopStudent(book []Student) (int64, bool)

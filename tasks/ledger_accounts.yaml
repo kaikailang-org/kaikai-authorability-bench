@@ -1,0 +1,41 @@
+id: ledger_accounts
+tier: module
+freshness: fresh (account ledger with transfer as the two-update trap)
+prompt: |
+  Implement an account ledger. The ledger is a list of accounts with unique
+  ids; every operation is pure — it returns a NEW ledger preserving account
+  order — and invalid operations return the idiomatic absent value.
+  - open_account(ledger, id): appends an account with balance 0 at the END.
+    Invalid when the id already exists.
+  - deposit(ledger, id, n): adds n. Invalid when n < 1 or the id is absent.
+  - withdraw(ledger, id, n): subtracts n. Invalid when n < 1, the id is
+    absent, or the balance is less than n (no overdraft; reaching exactly 0
+    is fine).
+  - transfer(ledger, from, to, n): moves n between two EXISTING accounts.
+    Invalid when n < 1, either id is absent, from equals to, or the source
+    balance is less than n. Both balances change in the same operation.
+  - balance_of(ledger, id): the balance; absent when the id is missing.
+  Example: open 1, open 2, deposit 1 100, transfer 1->2 40 leaves balances
+  60 and 40; transfer 2->2 10 is invalid; withdraw 2 41 is invalid.
+signatures:
+  kaikai: |
+    pub type Account = { id: Int, balance: Int }
+    pub fn open_account(ledger: [Account], id: Int) : Option[[Account]]
+    pub fn deposit(ledger: [Account], id: Int, n: Int) : Option[[Account]]
+    pub fn withdraw(ledger: [Account], id: Int, n: Int) : Option[[Account]]
+    pub fn transfer(ledger: [Account], from: Int, to: Int, n: Int) : Option[[Account]]
+    pub fn balance_of(ledger: [Account], id: Int) : Option[Int]
+  rust: |
+    pub struct Account { pub id: i64, pub balance: i64 }
+    pub fn open_account(ledger: &[Account], id: i64) -> Option<Vec<Account>>
+    pub fn deposit(ledger: &[Account], id: i64, n: i64) -> Option<Vec<Account>>
+    pub fn withdraw(ledger: &[Account], id: i64, n: i64) -> Option<Vec<Account>>
+    pub fn transfer(ledger: &[Account], from: i64, to: i64, n: i64) -> Option<Vec<Account>>
+    pub fn balance_of(ledger: &[Account], id: i64) -> Option<i64>
+  go: |
+    type Account struct { Id, Balance int64 }
+    func OpenAccount(ledger []Account, id int64) ([]Account, bool)
+    func Deposit(ledger []Account, id, n int64) ([]Account, bool)
+    func Withdraw(ledger []Account, id, n int64) ([]Account, bool)
+    func Transfer(ledger []Account, from, to, n int64) ([]Account, bool)
+    func BalanceOf(ledger []Account, id int64) (int64, bool)

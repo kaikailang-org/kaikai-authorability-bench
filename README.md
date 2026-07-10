@@ -67,10 +67,12 @@ result record.
    domain framing (parsers, sensors, calendars, ledgers, payments); the
    unavoidable classic-algorithm overlap with training data is declared per
    task in its `freshness` field.
-2. **Module level** (~15 target; 3 pilots authored: token_bucket,
-   inventory_ops, text_table) — implement a multi-function interface against
-   a spec + tests. Pilots span the stdlib-surface axis the ablations
-   exposed: algorithm-heavy, record/state-heavy, and string/stdlib-heavy.
+2. **Module level** (~15 target; 9 authored) — implement a multi-function
+   interface against a spec + tests. The set spans the stdlib-surface axis
+   the ablations exposed, three modules per class: algorithm-heavy
+   (token_bucket, stack_calc, turtle_walk), record/state-heavy
+   (inventory_ops, ledger_accounts, grade_book), and string/stdlib-heavy
+   (text_table, query_string, log_summary).
 3. **Repo level** (~10, not yet authored) — fix a planted bug in a given
    codebase.
 

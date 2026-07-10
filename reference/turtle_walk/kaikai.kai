@@ -1,0 +1,25 @@
+pub type Turtle = { x: Int, y: Int, dir: Int }
+
+pub fn turtle_new() : Turtle = Turtle { x: 0, y: 0, dir: 0 }
+
+pub fn turn(t: Turtle, r: Int) : Turtle =
+  Turtle { x: t.x, y: t.y, dir: ((t.dir + r) % 4 + 4) % 4 }
+
+pub fn forward(t: Turtle, n0: Int) : Turtle = {
+  let n = if n0 < 0 { 0 } else { n0 }
+  if t.dir == 0 { Turtle { x: t.x, y: t.y + n, dir: t.dir } }
+  else { if t.dir == 1 { Turtle { x: t.x + n, y: t.y, dir: t.dir } }
+  else { if t.dir == 2 { Turtle { x: t.x, y: t.y - n, dir: t.dir } }
+  else { Turtle { x: t.x - n, y: t.y, dir: t.dir } } } }
+}
+
+fn walk_go(t: Turtle, cmds: [String]) : Option[Turtle] = match cmds {
+  [] -> Some(t)
+  [c, ...rest] ->
+    if c == "L" { walk_go(turn(t, 0 - 1), rest) }
+    else { if c == "R" { walk_go(turn(t, 1), rest) }
+    else { if c == "F" { walk_go(forward(t, 1), rest) }
+    else { None } } }
+}
+
+pub fn walk(cmds: [String]) : Option[Turtle] = walk_go(turtle_new(), cmds)

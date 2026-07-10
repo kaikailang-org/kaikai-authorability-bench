@@ -1,0 +1,32 @@
+id: stack_calc
+tier: module
+freshness: classic shape (stack machine) with modular API and strict token rules
+prompt: |
+  Implement a tiny stack calculator. The stack is a list whose HEAD is the
+  top. An instruction is one token: an integer literal (optional leading
+  '-' then one or more digits) which pushes its value, or one of "add",
+  "mul" (pop two, push left-operand-was-deeper result), "dup" (duplicate
+  the top), "swap" (exchange the two topmost), "pop" (discard the top).
+  - push(st, v): v on top.
+  - step(st, op): apply one instruction; the idiomatic absent value when
+    the token is unknown or the stack holds fewer values than the
+    instruction needs ("add"/"mul"/"swap" need two, "dup"/"pop" one).
+  - run(prog): starting from an empty stack, apply every instruction;
+    valid only when every step is valid and exactly one value remains.
+  Subtraction does not exist: "add" and "mul" are commutative on purpose.
+  Examples: run(["2","3","add"]) -> 5; run(["2","3","mul","dup","add"]) ->
+  12; run(["4","pop"]) -> invalid (empty at end); run(["swap"]) -> invalid;
+  run(["07"]) -> 7; run(["-"]) -> invalid; run([]) -> invalid.
+signatures:
+  kaikai: |
+    pub fn push(st: [Int], v: Int) : [Int]
+    pub fn step(st: [Int], op: String) : Option[[Int]]
+    pub fn run(prog: [String]) : Option[Int]
+  rust: |
+    pub fn push(st: &[i64], v: i64) -> Vec<i64>
+    pub fn step(st: &[i64], op: &str) -> Option<Vec<i64>>
+    pub fn run(prog: &[&str]) -> Option<i64>
+  go: |
+    func Push(st []int64, v int64) []int64
+    func Step(st []int64, op string) ([]int64, bool)
+    func Run(prog []string) (int64, bool)

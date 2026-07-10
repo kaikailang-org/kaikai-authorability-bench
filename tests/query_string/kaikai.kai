@@ -1,0 +1,57 @@
+fn p_eq(a: [Param], b: [Param]) : Bool = match a {
+  [] -> match b {
+    [] -> true
+    _ -> false
+  }
+  [x, ...xs] -> match b {
+    [] -> false
+    [y, ...ys] -> if x.key == y.key and x.value == y.value { p_eq(xs, ys) } else { false }
+  }
+}
+
+fn parse_is(s: String, want: [Param]) : Bool = match parse_query(s) {
+  Some(ps) -> p_eq(ps, want)
+  None -> false
+}
+
+fn parse_bad(s: String) : Bool = match parse_query(s) {
+  Some(_ps) -> false
+  None -> true
+}
+
+fn mk(k: String, v: String) : Param = Param { key: k, value: v }
+
+fn main() : Int / Stdout = {
+  let p1 = [mk("a", "1"), mk("b", "2")]
+  let dup = [mk("x", "1"), mk("x", "2")]
+  let gets = (match get_param(p1, "b") {
+      Some(v) -> v == "2"
+      None -> false
+    }) and (match get_param(p1, "z") {
+      Some(_v) -> false
+      None -> true
+    }) and (match get_param(dup, "x") {
+      Some(v) -> v == "1"
+      None -> false
+    })
+  let sets = p_eq(set_param(p1, "a", "9"), [mk("a", "9"), mk("b", "2")]) and
+    p_eq(set_param(p1, "c", "3"), [mk("a", "1"), mk("b", "2"), mk("c", "3")]) and
+    p_eq(set_param(dup, "x", "7"), [mk("x", "7"), mk("x", "2")])
+  let renders = render_query(p1) == "a=1&b=2" and
+    render_query([]) == "" and
+    render_query([mk("a", "")]) == "a=" and
+    (match parse_query("k=a=b&z=") {
+      Some(ps) -> render_query(ps) == "k=a=b&z="
+      None -> false
+    })
+  let ok = parse_is("a=1&b=2", p1) and
+    parse_is("k=a=b", [mk("k", "a=b")]) and
+    parse_is("a=", [mk("a", "")]) and
+    parse_is("", []) and
+    parse_bad("=x") and
+    parse_bad("a=1&&b=2") and
+    parse_bad("flag") and
+    parse_bad("a=1&flag") and
+    gets and sets and renders
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

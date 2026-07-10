@@ -1,0 +1,54 @@
+pub type Student = { id: Int, scores: [Int] }
+
+fn get_stu(book: [Student], id: Int) : Option[Student] = match book {
+  [] -> None
+  [s, ...t] -> if s.id == id { Some(s) } else { get_stu(t, id) }
+}
+
+fn append_score(book: [Student], id: Int, score: Int) : [Student] = match book {
+  [] -> []
+  [s, ...t] ->
+    if s.id == id { [Student { id: s.id, scores: concat([s.scores, [score]]) }, ...t] }
+    else { [s, ...append_score(t, id, score)] }
+}
+
+pub fn add_score(book: [Student], id: Int, score: Int) : Option[[Student]] =
+  if score < 0 or score > 100 { None }
+  else { match get_stu(book, id) {
+    Some(_s) -> Some(append_score(book, id, score))
+    None -> Some(concat([book, [Student { id: id, scores: [score] }]]))
+  } }
+
+fn sum_of(xs: [Int]) : Int = match xs {
+  [] -> 0
+  [x, ...t] -> x + sum_of(t)
+}
+
+fn len_of(xs: [Int]) : Int = match xs {
+  [] -> 0
+  [_x, ...t] -> 1 + len_of(t)
+}
+
+pub fn average_floor(book: [Student], id: Int) : Option[Int] =
+  match get_stu(book, id) {
+    None -> None
+    Some(s) -> match s.scores {
+      [] -> None
+      _ -> Some(sum_of(s.scores) / len_of(s.scores))
+    }
+  }
+
+fn top_go(book: [Student], rest: [Student], best: Int, best_id: Int, unique: Bool, any: Bool) : Option[Int] =
+  match rest {
+    [] -> if any and unique { Some(best_id) } else { None }
+    [s, ...t] -> match average_floor(book, s.id) {
+      None -> top_go(book, t, best, best_id, unique, any)
+      Some(av) ->
+        if any == false or av > best { top_go(book, t, av, s.id, true, true) }
+        else { if av == best { top_go(book, t, best, best_id, false, true) }
+        else { top_go(book, t, best, best_id, unique, any) } }
+    }
+  }
+
+pub fn top_student(book: [Student]) : Option[Int] =
+  top_go(book, book, 0, 0, false, false)
