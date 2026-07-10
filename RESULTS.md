@@ -160,6 +160,8 @@ claude-sonnet-5 no-info        12   1.00    1.00    679597
   in the module tier where each language shows its own idiom.
 - **Strings are ASCII-only.** Unicode segmentation differs enough across
   the three languages that fair hidden tests need careful spec work.
-- **Module (~15) and repo (~10) tiers unauthored.**
+- **Module tier: 3 pilots authored** (token_bucket / inventory_ops /
+  text_table — one per stdlib-surface class); ~12 more to reach the target.
+  **Repo tier (~10) unauthored.**
 - Runner ablations (`--config no-info|no-holes|flat-diags`) exist but have
   not been exercised in a real run yet.

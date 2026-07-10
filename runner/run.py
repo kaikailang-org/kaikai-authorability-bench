@@ -61,13 +61,22 @@ def sh(cmd, cwd=None, timeout=120, env=None, stdin=None):
         return 124, "", "TIMEOUT"
 
 def load_task(path):
-    # minimal YAML reader for our flat spec files (avoid a dependency)
+    # minimal YAML reader for our flat spec files (avoid a dependency);
+    # signatures accept single-line values or `lang: |` block scalars
     text = path.read_text()
-    task = {"id": None, "prompt": [], "signatures": {}}
-    mode = None
+    task = {"id": None, "tier": "function", "prompt": [], "signatures": {}}
+    mode, block = None, None
     for line in text.splitlines():
+        if block is not None:
+            if line.startswith("    ") or not line.strip():
+                task["signatures"][block] += line[4:] + "\n"
+                continue
+            task["signatures"][block] = task["signatures"][block].strip()
+            block = None
         if line.startswith("id:"):
             task["id"] = line.split(":", 1)[1].strip()
+        elif line.startswith("tier:"):
+            task["tier"] = line.split(":", 1)[1].strip()
         elif line.startswith("prompt:"):
             mode = "prompt"
         elif line.startswith("signatures:"):
@@ -76,9 +85,15 @@ def load_task(path):
             task["prompt"].append(line[2:])
         elif mode == "sig" and line.strip() and ":" in line:
             k, v = line.strip().split(":", 1)
-            task["signatures"][k.strip()] = v.strip().strip('"')
+            if v.strip() == "|":
+                block = k.strip()
+                task["signatures"][block] = ""
+            else:
+                task["signatures"][k.strip()] = v.strip().strip('"')
         elif line and not line.startswith(" "):
             mode = None
+    if block is not None:
+        task["signatures"][block] = task["signatures"][block].strip()
     task["prompt"] = "\n".join(task["prompt"]).strip()
     return task
 
@@ -117,7 +132,7 @@ def smoke(langs, only=None):
     print(f"\nsmoke: {'ALL GREEN' if bad == 0 else str(bad) + ' failing cells'}")
     return 1 if bad else 0
 
-PROMPT = """You are writing {lang} code. Implement exactly this function:
+PROMPT = """You are writing {lang} code. Implement exactly this {kind}:
 
 {signature}
 
@@ -269,8 +284,9 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
     transcript = []
     for r in range(1, max_rounds + 1):
         rounds = r
+        kind = "module interface" if task["tier"] == "module" else "function"
         prompt = PROMPT.format(lang=lang, signature=sig, spec=task["prompt"],
-                               tools=tools, solfile=solname, feedback=fb)
+                               kind=kind, tools=tools, solfile=solname, feedback=fb)
         base = run_dir / "work" / f"{task['id']}-{lang}-{seed}" / f"r{r}"
         scratch = base / "scratch"
         scratch.mkdir(parents=True, exist_ok=True)

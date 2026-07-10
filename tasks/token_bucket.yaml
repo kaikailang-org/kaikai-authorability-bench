@@ -1,0 +1,38 @@
+id: token_bucket
+tier: module
+freshness: fresh (pure-functional token bucket, rate-limiter framing)
+prompt: |
+  Implement a token-bucket rate limiter as a pure-functional module: every
+  operation returns a new bucket and never mutates its input. A bucket has
+  a fixed capacity, a current token count, and a refill amount per tick.
+  - new_bucket(capacity, refill): a bucket starting FULL (tokens equal to
+    capacity). Invalid — return the idiomatic absent value — when
+    capacity <= 0 or refill < 0 (refill 0 is legal: a bucket that never
+    replenishes).
+  - tick(b): adds the refill amount to the tokens, capping at capacity.
+  - try_acquire(b, n): attempt to take n tokens. When n >= 1 and the bucket
+    holds at least n, return the reduced bucket and success; otherwise
+    return the bucket UNCHANGED and failure (n <= 0 always fails).
+  - drain(b): the same bucket with zero tokens.
+  Examples: new_bucket(5, 2) holds 5; drain it, tick twice -> holds 4;
+  try_acquire(holding 3, 3) succeeds leaving 0; try_acquire(holding 3, 4)
+  fails leaving 3; try_acquire(b, 0) fails; new_bucket(0, 1) is invalid.
+signatures:
+  kaikai: |
+    pub type Bucket = { capacity: Int, tokens: Int, refill: Int }
+    pub fn new_bucket(capacity: Int, refill: Int) : Option[Bucket]
+    pub fn tick(b: Bucket) : Bucket
+    pub fn try_acquire(b: Bucket, n: Int) : (Bucket, Bool)
+    pub fn drain(b: Bucket) : Bucket
+  rust: |
+    pub struct Bucket { pub capacity: i64, pub tokens: i64, pub refill: i64 }
+    pub fn new_bucket(capacity: i64, refill: i64) -> Option<Bucket>
+    pub fn tick(b: &Bucket) -> Bucket
+    pub fn try_acquire(b: &Bucket, n: i64) -> (Bucket, bool)
+    pub fn drain(b: &Bucket) -> Bucket
+  go: |
+    type Bucket struct { Capacity, Tokens, Refill int64 }
+    func NewBucket(capacity, refill int64) (Bucket, bool)
+    func Tick(b Bucket) Bucket
+    func TryAcquire(b Bucket, n int64) (Bucket, bool)
+    func Drain(b Bucket) Bucket
