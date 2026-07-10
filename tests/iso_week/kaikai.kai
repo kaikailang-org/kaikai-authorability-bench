@@ -1,0 +1,21 @@
+fn chk(y: Int, m: Int, d: Int, wy: Int, ww: Int) : Bool = {
+  let r = iso_week(y, m, d)
+  r.year == wy and r.week == ww
+}
+
+fn main() : Int / Stdout = {
+  let ok = chk(2026, 1, 1, 2026, 1) and
+    chk(2016, 1, 1, 2015, 53) and
+    chk(2025, 12, 29, 2026, 1) and
+    chk(2021, 1, 3, 2020, 53) and
+    chk(2020, 2, 29, 2020, 9) and
+    chk(2027, 1, 1, 2026, 53) and
+    chk(2020, 12, 31, 2020, 53) and
+    chk(1600, 1, 1, 1599, 52) and
+    chk(2000, 1, 1, 1999, 52) and
+    chk(2024, 12, 30, 2025, 1) and
+    chk(1999, 12, 31, 1999, 52) and
+    chk(2015, 12, 28, 2015, 53) and
+    chk(2026, 7, 9, 2026, 28)
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

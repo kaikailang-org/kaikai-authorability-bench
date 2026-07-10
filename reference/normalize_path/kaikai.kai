@@ -1,0 +1,19 @@
+fn resolve(parts: [String], stack: [String]) : [String] = match parts {
+  [] -> stack.reverse()
+  [p, ...t] ->
+    if p == "" or p == "." { resolve(t, stack) }
+    else { if p == ".." {
+      match stack {
+        [top, ...s2] -> resolve(t, s2)
+        [] -> resolve(t, [])
+      }
+    } else { resolve(t, [p, ...stack]) } }
+}
+
+pub fn normalize_path(s: String) : Option[String] = match s.drop_prefix("/") {
+  None -> None
+  Some(rest) -> {
+    let joined = resolve(rest.split("/"), []).join("/")
+    Some("/#{joined}")
+  }
+}

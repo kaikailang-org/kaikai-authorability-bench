@@ -1,0 +1,40 @@
+fn se(a: [String], b: [String]) : Bool = match a {
+  [] -> match b {
+    [] -> true
+    _ -> false
+  }
+  [x, ...xs] -> match b {
+    [] -> false
+    [y, ...ys] -> if x == y { se(xs, ys) } else { false }
+  }
+}
+
+fn chk_some(s: String, want: [String]) : Bool = match parse_csv_row(s) {
+  Some(v) -> se(v, want)
+  None -> false
+}
+
+fn chk_none(s: String) : Bool = match parse_csv_row(s) {
+  Some(_) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let q = "\""
+  let ok = chk_some("a,b,c", ["a", "b", "c"]) and
+    chk_some("#{q}a,b#{q},c", ["a,b", "c"]) and
+    chk_some("a,#{q}x#{q}#{q}y#{q}", ["a", "x#{q}y"]) and
+    chk_some("#{q}#{q}", [""]) and
+    chk_some("", [""]) and
+    chk_some("a,", ["a", ""]) and
+    chk_some(",a", ["", "a"]) and
+    chk_some(",,", ["", "", ""]) and
+    chk_some("#{q}#{q}#{q}#{q}", [q]) and
+    chk_some("#{q}a\nb#{q},c", ["a\nb", "c"]) and
+    chk_none("a,#{q}b#{q}x") and
+    chk_none("a#{q}b") and
+    chk_none("#{q}a") and
+    chk_none("#{q}a#{q}#{q}") and
+    chk_none("x,#{q}a#{q}#{q}")
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

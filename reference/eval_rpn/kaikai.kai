@@ -1,0 +1,46 @@
+fn digits_val(cs: [Char], acc: Int) : Option[Int] = match cs {
+  [] -> Some(acc)
+  [c, ...t] -> if char.is_digit(c) { digits_val(t, acc * 10 + (char_to_int(c) - 48)) } else { None }
+}
+
+fn parse_lit(s: String) : Option[Int] = match s.chars() {
+  ['-'] -> None
+  ['-', ...t] -> match digits_val(t, 0) {
+    Some(v) -> Some(0 - v)
+    None -> None
+  }
+  [] -> None
+  cs -> digits_val(cs, 0)
+}
+
+fn is_op(t: String) : Bool = t == "+" or t == "-" or t == "*" or t == "/"
+
+fn apply(a: Int, b: Int, op: String) : Option[Int] =
+  if op == "+" { Some(a + b) }
+  else { if op == "-" { Some(a - b) }
+  else { if op == "*" { Some(a * b) }
+  else { if b == 0 { None } else { Some(a / b) } } } }
+
+fn run_rpn(st: [Int], toks: [String]) : Option[Int] = match toks {
+  [] -> match st {
+    [x] -> Some(x)
+    _ -> None
+  }
+  [t, ...rest] ->
+    if is_op(t) {
+      match st {
+        [b, a, ...s2] -> match apply(a, b, t) {
+          Some(r) -> run_rpn([r, ...s2], rest)
+          None -> None
+        }
+        _ -> None
+      }
+    } else {
+      match parse_lit(t) {
+        Some(v) -> run_rpn([v, ...st], rest)
+        None -> None
+      }
+    }
+}
+
+pub fn eval_rpn(tokens: [String]) : Option[Int] = run_rpn([], tokens)

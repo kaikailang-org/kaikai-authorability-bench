@@ -1,0 +1,22 @@
+id: parse_csv_row
+tier: function
+freshness: fresh-ish (single-record CSV field splitter with strict quoting rules)
+prompt: |
+  Split one CSV record into its fields. Fields are separated by commas. A
+  field may be quoted: wrapped in double quotes, inside which commas and
+  quote-pairs are literal — a doubled quote ("") inside a quoted field is
+  one literal quote character. A quoted field must occupy the entire field:
+  the opening quote must be the first character of the field and the
+  character after the closing quote must be a comma or the end of the input.
+  An unquoted field must not contain any double-quote character. The input
+  is invalid — return the idiomatic absent value — on a stray quote inside
+  an unquoted field, an unterminated quoted field, or any character between
+  a closing quote and the next comma/end. The empty input is one empty
+  field. Examples (single quotes frame the input): 'a,b,c' -> [a, b, c];
+  '"a,b",c' -> [a,b | c]; 'a,"x""y"' -> [a | x"y]; '""' -> one empty field;
+  'a,' -> [a | empty]; 'a,"b"x' -> invalid; 'a"b' -> invalid; '"a' ->
+  invalid.
+signatures:
+  kaikai: "pub fn parse_csv_row(s: String) : Option[[String]]"
+  rust:   "pub fn parse_csv_row(s: &str) -> Option<Vec<String>>"
+  go:     "func ParseCsvRow(s string) ([]string, bool)"

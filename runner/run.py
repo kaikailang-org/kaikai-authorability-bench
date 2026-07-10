@@ -99,10 +99,12 @@ def cell(task, lang, sol_text, workdir):
 
 # ---------------------------------------------------------------- modes
 
-def smoke(langs):
+def smoke(langs, only=None):
     bad = 0
     for tf in sorted((ROOT / "tasks").glob("*.yaml")):
         task = load_task(tf)
+        if only and task["id"] not in only:
+            continue
         for lang in langs:
             ext, _ = ADAPTERS[lang]
             ref = ROOT / "reference" / task["id"] / ext
@@ -390,7 +392,7 @@ if __name__ == "__main__":
     elif a.report:
         report(a.report)
     elif a.smoke:
-        sys.exit(smoke(langs))
+        sys.exit(smoke(langs, only=set(a.tasks.split(",")) if a.tasks else None))
     elif a.agent:
         agent_loop(shlex.split(a.agent), langs, a.seeds, a.max_rounds,
                    a.agent_timeout, a.config,

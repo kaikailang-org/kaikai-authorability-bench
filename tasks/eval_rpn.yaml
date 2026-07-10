@@ -1,0 +1,20 @@
+id: eval_rpn
+tier: function
+freshness: classic-algorithm (RPN evaluation), training overlap likely; strictness rules are fresh
+prompt: |
+  Evaluate a Reverse Polish Notation expression given as a list of tokens.
+  A token is either an integer literal (an optional leading '-' followed by
+  one or more digits; "-" alone is NOT a literal) or one of the operators
+  "+", "-", "*", "/". An operator pops the two most recent values and pushes
+  the result; the value pushed earlier is the LEFT operand. Division
+  truncates toward zero; dividing by zero is invalid. The expression is
+  invalid when: any token is neither literal nor operator, an operator finds
+  fewer than two values, or evaluation does not end with exactly one value
+  (the empty input is invalid). Return the idiomatic absent value for
+  invalid. Examples: ["3","4","+"] -> 7; ["5","1","2","+","4","*","-"] -> -7;
+  ["7","-2","/"] -> -3; ["8","0","/"] -> invalid; ["3","4"] -> invalid;
+  ["+"] -> invalid; ["3","-"] -> invalid.
+signatures:
+  kaikai: "pub fn eval_rpn(tokens: [String]) : Option[Int]"
+  rust:   "pub fn eval_rpn(tokens: &[&str]) -> Option<i64>"
+  go:     "func EvalRPN(tokens []string) (int64, bool)"
