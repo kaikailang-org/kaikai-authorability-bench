@@ -1,0 +1,38 @@
+id: text_table
+tier: module
+freshness: fresh (fixed-width ASCII table renderer with exact-output contract)
+prompt: |
+  Implement a plain-text table renderer. Column widths derive from content;
+  all strings are ASCII, so length in bytes equals visible width.
+  - col_widths(headers, rows): one width per column, where a column's width
+    is the maximum length among its header and all its cells in the rows.
+    Invalid — the idiomatic absent value — when headers is empty or any row
+    has a different number of cells than headers.
+  - render_row(cells, widths): the cells left-aligned — each cell padded on
+    the right with spaces to its column width — joined with " | ". The LAST
+    cell is NOT padded, so lines never carry trailing spaces. Assume cells
+    and widths have equal length and every cell fits its width.
+  - render_table(headers, rows): the header row, a separator row (each
+    column filled with '-' to exactly its width, same " | " join, and the
+    last column's dashes also at full width), then one row per entry — all
+    joined with a newline, no trailing newline. Invalid exactly when
+    col_widths is invalid.
+  Example: headers [name, qty], rows [[ana, 3], [b, 12]] renders as:
+    name | qty
+    ---- | ---
+    ana  | 3
+    b    | 12
+  With no rows the table is the header and separator rows only.
+signatures:
+  kaikai: |
+    pub fn col_widths(headers: [String], rows: [[String]]) : Option[[Int]]
+    pub fn render_row(cells: [String], widths: [Int]) : String
+    pub fn render_table(headers: [String], rows: [[String]]) : Option[String]
+  rust: |
+    pub fn col_widths(headers: &[&str], rows: &[Vec<&str>]) -> Option<Vec<i64>>
+    pub fn render_row(cells: &[&str], widths: &[i64]) -> String
+    pub fn render_table(headers: &[&str], rows: &[Vec<&str>]) -> Option<String>
+  go: |
+    func ColWidths(headers []string, rows [][]string) ([]int64, bool)
+    func RenderRow(cells []string, widths []int64) string
+    func RenderTable(headers []string, rows [][]string) (string, bool)

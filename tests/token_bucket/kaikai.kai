@@ -1,0 +1,39 @@
+fn acq_ok(b: Bucket, n: Int, want_tokens: Int) : Bool = match try_acquire(b, n) {
+  (b2, ok) -> ok and b2.tokens == want_tokens
+}
+
+fn acq_fail(b: Bucket, n: Int, want_tokens: Int) : Bool = match try_acquire(b, n) {
+  (b2, ok) -> (ok == false) and b2.tokens == want_tokens
+}
+
+fn main() : Int / Stdout = {
+  let ok = match new_bucket(5, 2) {
+    None -> false
+    Some(b) -> {
+      let full = b.tokens == 5 and b.capacity == 5 and b.refill == 2
+      let after = tick(tick(drain(b)))
+      let refilled = after.tokens == 4
+      let capped = tick(after).tokens == 5
+      let h3 = Bucket { capacity: 5, tokens: 3, refill: 2 }
+      let zero_refill = match new_bucket(3, 0) {
+        Some(z) -> tick(drain(z)).tokens == 0
+        None -> false
+      }
+      let bad1 = match new_bucket(0, 1) {
+        None -> true
+        Some(x) -> false
+      }
+      let bad2 = match new_bucket(3, -1) {
+        None -> true
+        Some(x) -> false
+      }
+      full and refilled and capped and
+        acq_ok(h3, 3, 0) and
+        acq_fail(h3, 4, 3) and
+        acq_fail(h3, 0, 3) and
+        acq_fail(h3, -2, 3) and
+        zero_refill and bad1 and bad2
+    }
+  }
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

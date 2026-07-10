@@ -1,0 +1,18 @@
+pub type Bucket = { capacity: Int, tokens: Int, refill: Int }
+
+pub fn new_bucket(capacity: Int, refill: Int) : Option[Bucket] =
+  if capacity <= 0 or refill < 0 { None }
+  else { Some(Bucket { capacity: capacity, tokens: capacity, refill: refill }) }
+
+pub fn tick(b: Bucket) : Bucket = {
+  let t = b.tokens + b.refill
+  let capped = if t > b.capacity { b.capacity } else { t }
+  Bucket { capacity: b.capacity, tokens: capped, refill: b.refill }
+}
+
+pub fn try_acquire(b: Bucket, n: Int) : (Bucket, Bool) =
+  if n < 1 or b.tokens < n { (b, false) }
+  else { (Bucket { capacity: b.capacity, tokens: b.tokens - n, refill: b.refill }, true) }
+
+pub fn drain(b: Bucket) : Bucket =
+  Bucket { capacity: b.capacity, tokens: 0, refill: b.refill }

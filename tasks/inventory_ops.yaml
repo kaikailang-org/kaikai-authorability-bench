@@ -1,0 +1,44 @@
+id: inventory_ops
+tier: module
+freshness: fresh (warehouse hold/release/ship state machine)
+prompt: |
+  Implement a warehouse inventory module. An inventory is a list of items,
+  each with a sku, a quantity on hand (qty), and a reserved count; the
+  invariant 0 <= reserved <= qty always holds, and skus are unique. Every
+  operation is pure: it returns a NEW inventory preserving item order, and
+  invalid operations return the idiomatic absent value.
+  - add_stock(inv, sku, n): invalid when n < 1. Adds n to the item's qty
+    when the sku exists; otherwise appends a new item with qty n and
+    reserved 0 at the END.
+  - reserve(inv, sku, n): place a hold. Invalid when n < 1, the sku is
+    absent, or qty - reserved < n. Adds n to the item's reserved.
+  - release(inv, sku, n): undo a hold. Invalid when n < 1, the sku is
+    absent, or reserved < n. Subtracts n from reserved.
+  - ship(inv, sku, n): fulfill held units. Invalid when n < 1, the sku is
+    absent, or reserved < n. Subtracts n from BOTH qty and reserved. An
+    item may reach qty 0; it stays in the inventory.
+  - available(inv, sku): qty - reserved; absent when the sku is missing.
+  Example: [] |> add 7,10 |> reserve 7,4 |> ship 7,3 leaves item 7 with
+  qty 7, reserved 1, available 6.
+signatures:
+  kaikai: |
+    pub type Item = { sku: Int, qty: Int, reserved: Int }
+    pub fn add_stock(inv: [Item], sku: Int, n: Int) : Option[[Item]]
+    pub fn reserve(inv: [Item], sku: Int, n: Int) : Option[[Item]]
+    pub fn release(inv: [Item], sku: Int, n: Int) : Option[[Item]]
+    pub fn ship(inv: [Item], sku: Int, n: Int) : Option[[Item]]
+    pub fn available(inv: [Item], sku: Int) : Option[Int]
+  rust: |
+    pub struct Item { pub sku: i64, pub qty: i64, pub reserved: i64 }
+    pub fn add_stock(inv: &[Item], sku: i64, n: i64) -> Option<Vec<Item>>
+    pub fn reserve(inv: &[Item], sku: i64, n: i64) -> Option<Vec<Item>>
+    pub fn release(inv: &[Item], sku: i64, n: i64) -> Option<Vec<Item>>
+    pub fn ship(inv: &[Item], sku: i64, n: i64) -> Option<Vec<Item>>
+    pub fn available(inv: &[Item], sku: i64) -> Option<i64>
+  go: |
+    type Item struct { Sku, Qty, Reserved int64 }
+    func AddStock(inv []Item, sku, n int64) ([]Item, bool)
+    func Reserve(inv []Item, sku, n int64) ([]Item, bool)
+    func Release(inv []Item, sku, n int64) ([]Item, bool)
+    func Ship(inv []Item, sku, n int64) ([]Item, bool)
+    func Available(inv []Item, sku int64) (int64, bool)

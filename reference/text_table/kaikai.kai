@@ -1,0 +1,57 @@
+fn max_i(a: Int, b: Int) : Int = if a > b { a } else { b }
+
+fn widths_of(hs: [String], acc: [Int]) : [Int] = match hs {
+  [] -> acc.reverse()
+  [h, ...t] -> widths_of(t, [h.length(), ...acc])
+}
+
+fn merge_row(ws: [Int], cells: [String]) : Option[[Int]] = match ws {
+  [] -> match cells {
+    [] -> Some([])
+    _ -> None
+  }
+  [w, ...wt] -> match cells {
+    [] -> None
+    [c, ...ct] -> match merge_row(wt, ct) {
+      Some(rest) -> Some([max_i(w, c.length()), ...rest])
+      None -> None
+    }
+  }
+}
+
+fn merge_rows(ws: [Int], rows: [[String]]) : Option[[Int]] = match rows {
+  [] -> Some(ws)
+  [r, ...t] -> match merge_row(ws, r) {
+    Some(ws2) -> merge_rows(ws2, t)
+    None -> None
+  }
+}
+
+pub fn col_widths(headers: [String], rows: [[String]]) : Option[[Int]] = match headers {
+  [] -> None
+  _ -> merge_rows(widths_of(headers, []), rows)
+}
+
+fn row_parts(cells: [String], widths: [Int]) : [String] = match cells {
+  [] -> []
+  [c] -> [c]
+  [c, ...ct] -> match widths {
+    [w, ...wt] -> [c.pad_right(w, ' '), ...row_parts(ct, wt)]
+    [] -> [c, ...row_parts(ct, [])]
+  }
+}
+
+pub fn render_row(cells: [String], widths: [Int]) : String =
+  row_parts(cells, widths).join(" | ")
+
+fn dash_row(ws: [Int]) : String = (ws | (w) => "-".repeat(w)).join(" | ")
+
+pub fn render_table(headers: [String], rows: [[String]]) : Option[String] =
+  match col_widths(headers, rows) {
+    None -> None
+    Some(ws) -> {
+      let body = rows | (r) => render_row(r, ws)
+      let all = concat([[render_row(headers, ws), dash_row(ws)], body])
+      Some(all.join("\n"))
+    }
+  }

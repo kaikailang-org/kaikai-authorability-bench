@@ -1,0 +1,87 @@
+fn it_eq(a: Item, b: Item) : Bool =
+  a.sku == b.sku and a.qty == b.qty and a.reserved == b.reserved
+
+fn none_inv(x: Option[[Item]]) : Bool = match x {
+  None -> true
+  Some(_v) -> false
+}
+
+fn none_int(x: Option[Int]) : Bool = match x {
+  None -> true
+  Some(_v) -> false
+}
+
+fn main() : Int / Stdout = {
+  let ok = match add_stock([], 7, 10) {
+    None -> false
+    Some(inv1) -> match reserve(inv1, 7, 4) {
+      None -> false
+      Some(inv2) -> match ship(inv2, 7, 3) {
+        None -> false
+        Some(inv3) -> {
+          let base = match inv1 {
+            [a] -> it_eq(a, Item { sku: 7, qty: 10, reserved: 0 })
+            _ -> false
+          }
+          let held = match inv2 {
+            [a] -> it_eq(a, Item { sku: 7, qty: 10, reserved: 4 })
+            _ -> false
+          }
+          let shipped = match inv3 {
+            [a] -> it_eq(a, Item { sku: 7, qty: 7, reserved: 1 })
+            _ -> false
+          }
+          let avail = match available(inv3, 7) {
+            Some(v) -> v == 6
+            None -> false
+          }
+          let two = match add_stock(inv3, 3, 5) {
+            None -> false
+            Some(inv4) -> match add_stock(inv4, 7, 2) {
+              None -> false
+              Some(inv5) -> match inv5 {
+                [a, b] -> it_eq(a, Item { sku: 7, qty: 9, reserved: 1 }) and
+                          it_eq(b, Item { sku: 3, qty: 5, reserved: 0 })
+                _ -> false
+              }
+            }
+          }
+          let checks = none_inv(add_stock(inv3, 1, 0)) and
+            none_inv(reserve(inv3, 99, 1)) and
+            none_inv(reserve(inv3, 7, 7)) and
+            none_inv(release(inv3, 7, 2)) and
+            none_inv(ship(inv3, 7, 2)) and
+            none_int(available(inv3, 42))
+          let drainable = match add_stock([], 1, 2) {
+            None -> false
+            Some(x1) -> match reserve(x1, 1, 2) {
+              None -> false
+              Some(x2) -> match ship(x2, 1, 2) {
+                None -> false
+                Some(x3) -> match x3 {
+                  [a] -> it_eq(a, Item { sku: 1, qty: 0, reserved: 0 })
+                  _ -> false
+                }
+              }
+            }
+          }
+          let releasable = match add_stock([], 2, 3) {
+            None -> false
+            Some(y1) -> match reserve(y1, 2, 3) {
+              None -> false
+              Some(y2) -> match release(y2, 2, 3) {
+                None -> false
+                Some(y3) -> match available(y3, 2) {
+                  Some(v) -> v == 3
+                  None -> false
+                }
+              }
+            }
+          }
+          base and held and shipped and avail and two and checks and drainable and releasable
+        }
+      }
+    }
+  }
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

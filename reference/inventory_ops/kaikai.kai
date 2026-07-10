@@ -1,0 +1,47 @@
+pub type Item = { sku: Int, qty: Int, reserved: Int }
+
+fn get(inv: [Item], sku: Int) : Option[Item] = match inv {
+  [] -> None
+  [it, ...t] -> if it.sku == sku { Some(it) } else { get(t, sku) }
+}
+
+fn swap(inv: [Item], sku: Int, dq: Int, dr: Int) : [Item] = match inv {
+  [] -> []
+  [it, ...t] ->
+    if it.sku == sku {
+      [Item { sku: it.sku, qty: it.qty + dq, reserved: it.reserved + dr }, ...t]
+    } else { [it, ...swap(t, sku, dq, dr)] }
+}
+
+pub fn add_stock(inv: [Item], sku: Int, n: Int) : Option[[Item]] =
+  if n < 1 { None }
+  else { match get(inv, sku) {
+    Some(it) -> Some(swap(inv, sku, n, 0))
+    None -> Some(concat([inv, [Item { sku: sku, qty: n, reserved: 0 }]]))
+  } }
+
+pub fn reserve(inv: [Item], sku: Int, n: Int) : Option[[Item]] = match get(inv, sku) {
+  None -> None
+  Some(it) ->
+    if n < 1 or it.qty - it.reserved < n { None }
+    else { Some(swap(inv, sku, 0, n)) }
+}
+
+pub fn release(inv: [Item], sku: Int, n: Int) : Option[[Item]] = match get(inv, sku) {
+  None -> None
+  Some(it) ->
+    if n < 1 or it.reserved < n { None }
+    else { Some(swap(inv, sku, 0, 0 - n)) }
+}
+
+pub fn ship(inv: [Item], sku: Int, n: Int) : Option[[Item]] = match get(inv, sku) {
+  None -> None
+  Some(it) ->
+    if n < 1 or it.reserved < n { None }
+    else { Some(swap(inv, sku, 0 - n, 0 - n)) }
+}
+
+pub fn available(inv: [Item], sku: Int) : Option[Int] = match get(inv, sku) {
+  None -> None
+  Some(it) -> Some(it.qty - it.reserved)
+}

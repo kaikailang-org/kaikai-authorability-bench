@@ -1,0 +1,43 @@
+fn wi_eq(a: [Int], b: [Int]) : Bool = match a {
+  [] -> match b {
+    [] -> true
+    _ -> false
+  }
+  [x, ...xs] -> match b {
+    [] -> false
+    [y, ...ys] -> if x == y { wi_eq(xs, ys) } else { false }
+  }
+}
+
+fn tbl_is(headers: [String], rows: [[String]], want: String) : Bool =
+  match render_table(headers, rows) {
+    Some(s) -> s == want
+    None -> false
+  }
+
+fn tbl_none(headers: [String], rows: [[String]]) : Bool =
+  match render_table(headers, rows) {
+    Some(_s) -> false
+    None -> true
+  }
+
+fn main() : Int / Stdout = {
+  let ws_ok = match col_widths(["name", "qty"], [["ana", "3"], ["b", "12"]]) {
+    Some(ws) -> wi_eq(ws, [4, 3])
+    None -> false
+  }
+  let want = "name | qty\n---- | ---\nana  | 3\nb    | 12"
+  let ok = ws_ok and
+    tbl_is(["name", "qty"], [["ana", "3"], ["b", "12"]], want) and
+    tbl_is(["id"], [], "id\n--") and
+    tbl_is(["h"], [["wide"]], "h\n----\nwide") and
+    render_row(["a", "b"], [3, 5]) == "a   | b" and
+    render_row(["x"], [7]) == "x" and
+    tbl_none([], []) and
+    tbl_none(["a", "b"], [["only"]]) and
+    (match col_widths(["a"], [["x", "y"]]) {
+      Some(_w) -> false
+      None -> true
+    })
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}
