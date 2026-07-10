@@ -92,6 +92,37 @@ tokens/cell (vs ~105-129k for Go/Rust). Even edge-dense single functions
 don't yet produce reds for this model; the discriminating pressure likely
 needs the module tier or a deliberately unfamiliar API surface.
 
+## Multi-model hard batch (fable-5, opus-4.8, sonnet-5 × 6 tasks × 2 seeds)
+
+```
+model           lang     config      cells    s@1  rounds  tok/cell
+-------------------------------------------------------------------
+claude-fable-5  go       full            8   1.00    1.00    105068
+claude-fable-5  kaikai   full            8   1.00    1.00    500210
+claude-fable-5  rust     full            8   1.00    1.00    128711
+claude-opus-4-8 go       full           12   1.00    1.00    137359
+claude-opus-4-8 kaikai   full           12   1.00    1.00   1031254
+claude-opus-4-8 rust     full           12   1.00    1.00     88095
+claude-sonnet-5 go       full           12   1.00    1.00    308486
+claude-sonnet-5 kaikai   full           12   1.00    1.00   1618727
+claude-sonnet-5 rust     full           12   1.00    1.00    260441
+```
+
+(fable rows are 8 cells because the spend-limit incident consumed its
+normalize_path/parse_csv_row budget; opus covered those 12 cells.)
+
+- **Zero red rounds across three models and 92 hard-batch cells.** The
+  function tier does not discriminate on correctness for any current Claude
+  model. Definitive: correctness pressure must come from the module tier.
+- **The missing-prior tax scales inversely with model strength.** kaikai
+  probing cost: fable ~500k, opus ~1.0M, sonnet ~1.6M tokens/cell (~4×, ~9×,
+  ~5× their own mainstream-language cost). Every model closes the
+  correctness gap with zero training prior — but weaker models buy that
+  correctness with far more toolchain interaction. This makes the
+  tooling-ablation × model grid the most promising next measurement: if
+  `no-info` hurts sonnet proportionally more than fable, "designed for
+  LLMs" is quantified as a per-model coefficient without needing red rounds.
+
 ## Gaps left open (annotated for the next authoring pass)
 
 - **No Map/Set tasks.** kaikai has `%{}`/`%[]` literals, but Go needs
