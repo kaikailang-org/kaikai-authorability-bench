@@ -38,10 +38,45 @@ results.jsonl writing. Findings are in README "Agent invocation"
 
 Pilot outcome: **green in round 1** — the agent probed the toolchain in its
 scratch dir, wrote `sol.kai`, and the hidden tests passed on the first
-harness compile (~165 s; ~576k tokens in / 5.6k out, inner agent turns
-included). One cell proves plumbing, not the thesis; the full grid is
-still unrun. `runner/run.py --report <run-dir>...` aggregates any set of
-runs into the success@k / rounds / tokens table, grouped by lang × config.
+harness compile. `runner/run.py --report <run-dir>...` aggregates any set
+of runs into the success@k / rounds / tokens table, grouped by lang × config.
+
+## Calibration run (10 tasks × 2 seeds, all four kaikai configs)
+
+Agent: `claude -p --output-format json --allowedTools Bash`. Tasks spanning
+every theme: luhn_check, parse_duration, parse_hex, batch_withdraw,
+vote_winner, merge_ranges, slugify, day_of_year, max_subarray, rle_decode.
+120 cells total (60 full across 3 languages + 60 kaikai ablation).
+
+```
+lang     config      cells    s@1    s@2  rounds  tok/cell
+----------------------------------------------------------
+go       full           20   1.00   1.00    1.00    117165
+kaikai   flat-diags     20   1.00   1.00    1.00    423123
+kaikai   full           20   0.95   1.00    1.05    451510
+kaikai   no-holes       20   1.00   1.00    1.00    478251
+kaikai   no-info        20   1.00   1.00    1.00    568080
+rust     full           20   1.00   1.00    1.00    114415
+```
+
+Readings (n=20 per cell row; calibration-grade, not headline numbers):
+
+- **No language ever produced a red compile or failed test in 120 cells.**
+  kaikai's lone s@1 miss was an agent timeout (round 2 went green on the
+  first actual compile). At this task size, success@1 is saturated and does
+  not discriminate — harder tasks are what the metric needs.
+- **kaikai costs ~4× tokens/cell vs Rust/Go** (450k vs ~115k): the missing
+  training prior is paid for in toolchain probing, not in extra rounds.
+- **`no-info` is the one ablation with a clear effect: +26% tokens** over
+  full. The structured reference is what the agent actually leans on;
+  without it, stdlib discovery happens via trial-and-error `kai run`.
+- **`no-holes` (+6%) and `flat-diags` (−6%) sit within noise.** Holes go
+  unused at single-function size, and with everything green in round 1 the
+  harness feedback channel (where rich diagnostics would matter) is nearly
+  never exercised. These two ablations need red rounds to discriminate.
+- **Ops note:** agent errors (timeouts) currently consume a round and dent
+  success@1, conflating infra flakiness with language DX — worth recording
+  `agent_errors` separately in the cell record before the full grid.
 
 ## Gaps left open (annotated for the next authoring pass)
 
