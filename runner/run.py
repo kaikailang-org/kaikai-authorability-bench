@@ -231,13 +231,13 @@ def strip_fences(s):
 def run_agent(agent_cmd, prompt, cwd, timeout, env=None):
     """Invoke the agent once, prompt on stdin (an argv prompt gets swallowed
     by variadic flags like claude's --allowedTools). Returns (ok,
-    solution_or_error, tokens_in, tokens_out, raw_stdout). Token counts come
-    from claude-style JSON output (`--output-format json`); plain stdout is
-    taken verbatim as the solution with unknown (None) token counts."""
+    solution_or_error, tokens_in, tokens_out, model, raw_stdout). Token and
+    model come from claude-style JSON output (`--output-format json`); plain
+    stdout is taken verbatim as the solution, tokens/model unknown (None)."""
     rc, out, err = sh(agent_cmd, cwd=cwd, timeout=timeout, env=env, stdin=prompt)
     if rc != 0:
-        return False, f"AGENT ERROR (exit {rc}):\n{err[-1000:]}", None, None, out
-    sol, tin, tout = out, None, None
+        return False, f"AGENT ERROR (exit {rc}):\n{err[-1000:]}", None, None, None, out
+    sol, tin, tout, model = out, None, None, None
     try:
         d = json.loads(out)
         if isinstance(d, dict) and "result" in d:
@@ -246,9 +246,13 @@ def run_agent(agent_cmd, prompt, cwd, timeout, env=None):
             tin = (u.get("input_tokens", 0) + u.get("cache_read_input_tokens", 0)
                    + u.get("cache_creation_input_tokens", 0))
             tout = u.get("output_tokens", 0)
+            mu = d.get("modelUsage", {})
+            if mu:
+                model = max(mu, key=lambda k: mu[k].get("inputTokens", 0)
+                            + mu[k].get("cacheReadInputTokens", 0))
     except ValueError:
         pass
-    return True, strip_fences(sol), tin, tout, out
+    return True, strip_fences(sol), tin, tout, model, out
 
 def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config, env):
     """Run one task x language x seed to green or round cap. Writes the full
@@ -261,6 +265,7 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
     tin = tout = 0
     have_usage = False
     agent_errors = 0
+    model = None
     transcript = []
     for r in range(1, max_rounds + 1):
         rounds = r
@@ -270,10 +275,12 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
         scratch = base / "scratch"
         scratch.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
-        ok, sol, ti, to, raw = run_agent(agent_cmd, prompt, scratch, timeout,
-                                         env=env if kaikai else None)
+        ok, sol, ti, to, mdl, raw = run_agent(agent_cmd, prompt, scratch, timeout,
+                                              env=env if kaikai else None)
         if ti is not None:
             tin += ti; tout += to; have_usage = True
+        if mdl:
+            model = mdl
         entry = {"round": r, "prompt": prompt, "agent_raw": raw,
                  "tokens_in": ti, "tokens_out": to,
                  "duration_s": round(time.time() - t0, 1)}
@@ -299,7 +306,8 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
     tpath = run_dir / "transcripts" / f"{task['id']}-{lang}-{seed}.json"
     tpath.write_text(json.dumps(transcript, indent=2))
     return {"task": task["id"], "lang": lang, "seed": seed, "config": config,
-            "green": green, "rounds": rounds, "agent_errors": agent_errors,
+            "model": model, "green": green, "rounds": rounds,
+            "agent_errors": agent_errors,
             "tokens_in": tin if have_usage else None,
             "tokens_out": tout if have_usage else None}
 
@@ -326,12 +334,14 @@ def report(run_dirs):
     maxr = max(r["rounds"] for r in recs)
     groups = {}
     for r in recs:
-        groups.setdefault((r["lang"], r.get("config", "full")), []).append(r)
-    hdr = f"{'lang':8} {'config':11} {'cells':>5} " + \
+        key = (r.get("model") or "?", r["lang"], r.get("config", "full"))
+        groups.setdefault(key, []).append(r)
+    mw = max(5, max(len(k[0]) for k in groups))
+    hdr = f"{'model':{mw}} {'lang':8} {'config':11} {'cells':>5} " + \
           " ".join(f"{'s@' + str(k):>6}" for k in range(1, maxr + 1)) + \
           f" {'rounds':>7} {'tok/cell':>9}"
     print(hdr); print("-" * len(hdr))
-    for (lang, cfg), rs in sorted(groups.items()):
+    for (model, lang, cfg), rs in sorted(groups.items()):
         n = len(rs)
         greens = [r for r in rs if r["green"]]
         curve = " ".join(f"{sum(1 for g in greens if g['rounds'] <= k) / n:6.2f}"
@@ -340,11 +350,11 @@ def report(run_dirs):
         toks = [r["tokens_in"] + r["tokens_out"] for r in rs
                 if r.get("tokens_in") is not None]
         tk = f"{sum(toks) / len(toks):9.0f}" if toks else f"{'?':>9}"
-        print(f"{lang:8} {cfg:11} {n:5} {curve} {mr} {tk}")
-    for (lang, cfg), rs in sorted(groups.items()):
+        print(f"{model:{mw}} {lang:8} {cfg:11} {n:5} {curve} {mr} {tk}")
+    for (model, lang, cfg), rs in sorted(groups.items()):
         stalled = sorted({r["task"] for r in rs if not r["green"]})
         if stalled:
-            print(f"\nstalled {lang}/{cfg}: {', '.join(stalled)}")
+            print(f"\nstalled {model}/{lang}/{cfg}: {', '.join(stalled)}")
 
 def agent_loop(agent_cmd, langs, seeds, max_rounds, timeout, config, only=None):
     ts = int(time.time())
