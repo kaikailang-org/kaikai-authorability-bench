@@ -1,0 +1,41 @@
+pub type Param = { key: String, value: String }
+
+fn parse_piece(piece: String) : Option[Param] = match piece.index_of("=") {
+  None -> None
+  Some(i) ->
+    if i == 0 { None }
+    else {
+      let k = piece.slice(0, i)
+      let v = piece.slice(i + 1, piece.length() - i - 1)
+      Some(Param { key: k, value: v })
+    }
+}
+
+fn parse_go(pieces: [String]) : Option[[Param]] = match pieces {
+  [] -> Some([])
+  [p, ...t] -> match parse_piece(p) {
+    None -> None
+    Some(param) -> match parse_go(t) {
+      None -> None
+      Some(rest) -> Some([param, ...rest])
+    }
+  }
+}
+
+pub fn parse_query(s: String) : Option[[Param]] =
+  if s.is_empty() { Some([]) } else { parse_go(s.split("&")) }
+
+pub fn get_param(ps: [Param], k: String) : Option[String] = match ps {
+  [] -> None
+  [p, ...t] -> if p.key == k { Some(p.value) } else { get_param(t, k) }
+}
+
+pub fn set_param(ps: [Param], k: String, v: String) : [Param] = match ps {
+  [] -> [Param { key: k, value: v }]
+  [p, ...t] ->
+    if p.key == k { [Param { key: p.key, value: v }, ...t] }
+    else { [p, ...set_param(t, k, v)] }
+}
+
+pub fn render_query(ps: [Param]) : String =
+  (ps | (p) => "#{p.key}=#{p.value}").join("&")

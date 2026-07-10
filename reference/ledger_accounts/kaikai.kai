@@ -1,0 +1,51 @@
+pub type Account = { id: Int, balance: Int }
+
+fn get_acc(ledger: [Account], id: Int) : Option[Account] = match ledger {
+  [] -> None
+  [a, ...t] -> if a.id == id { Some(a) } else { get_acc(t, id) }
+}
+
+fn adjust(ledger: [Account], id: Int, d: Int) : [Account] = match ledger {
+  [] -> []
+  [a, ...t] ->
+    if a.id == id { [Account { id: a.id, balance: a.balance + d }, ...t] }
+    else { [a, ...adjust(t, id, d)] }
+}
+
+pub fn open_account(ledger: [Account], id: Int) : Option[[Account]] =
+  match get_acc(ledger, id) {
+    Some(_a) -> None
+    None -> Some(concat([ledger, [Account { id: id, balance: 0 }]]))
+  }
+
+pub fn deposit(ledger: [Account], id: Int, n: Int) : Option[[Account]] =
+  if n < 1 { None }
+  else { match get_acc(ledger, id) {
+    None -> None
+    Some(_a) -> Some(adjust(ledger, id, n))
+  } }
+
+pub fn withdraw(ledger: [Account], id: Int, n: Int) : Option[[Account]] =
+  if n < 1 { None }
+  else { match get_acc(ledger, id) {
+    None -> None
+    Some(a) -> if a.balance < n { None } else { Some(adjust(ledger, id, 0 - n)) }
+  } }
+
+pub fn transfer(ledger: [Account], from: Int, to: Int, n: Int) : Option[[Account]] =
+  if n < 1 or from == to { None }
+  else { match get_acc(ledger, from) {
+    None -> None
+    Some(f) -> match get_acc(ledger, to) {
+      None -> None
+      Some(_t) ->
+        if f.balance < n { None }
+        else { Some(adjust(adjust(ledger, from, 0 - n), to, n)) }
+    }
+  } }
+
+pub fn balance_of(ledger: [Account], id: Int) : Option[Int] =
+  match get_acc(ledger, id) {
+    None -> None
+    Some(a) -> Some(a.balance)
+  }

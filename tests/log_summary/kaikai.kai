@@ -1,0 +1,50 @@
+fn line_is(s: String, level: String, msg: String) : Bool = match parse_line(s) {
+  Some(l) -> l.level == level and l.message == msg
+  None -> false
+}
+
+fn line_bad(s: String) : Bool = match parse_line(s) {
+  Some(_l) -> false
+  None -> true
+}
+
+fn count_is(lines: [String], level: String, want: Int) : Bool = match count_level(lines, level) {
+  Some(n) -> n == want
+  None -> false
+}
+
+fn count_bad(lines: [String], level: String) : Bool = match count_level(lines, level) {
+  Some(_n) -> false
+  None -> true
+}
+
+fn sum_is(lines: [String], want: String) : Bool = match summary(lines) {
+  Some(s) -> s == want
+  None -> false
+}
+
+fn sum_bad(lines: [String]) : Bool = match summary(lines) {
+  Some(_s) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let lines = ["INFO: a", "ERROR: b", "INFO: c", "WARN: "]
+  let ok = line_is("WARN: disk low", "WARN", "disk low") and
+    line_is("INFO: ", "INFO", "") and
+    line_is("ERROR: a: b: c", "ERROR", "a: b: c") and
+    line_bad("INFO:x") and
+    line_bad("DEBUG: x") and
+    line_bad("info: x") and
+    line_bad("INFO") and
+    line_bad("") and
+    line_bad(" INFO: x") and
+    count_is(lines, "INFO", 2) and
+    count_is([], "ERROR", 0) and
+    count_bad(lines, "DEBUG") and
+    count_bad(["INFO: a", "broken"], "INFO") and
+    sum_is(lines, "INFO=2 WARN=1 ERROR=1") and
+    sum_is([], "INFO=0 WARN=0 ERROR=0") and
+    sum_bad(["INFO: a", "oops: b"])
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

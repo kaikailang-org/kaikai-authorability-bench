@@ -1,0 +1,54 @@
+fn li_eq(a: [Int], b: [Int]) : Bool = match a {
+  [] -> match b {
+    [] -> true
+    _ -> false
+  }
+  [x, ...xs] -> match b {
+    [] -> false
+    [y, ...ys] -> if x == y { li_eq(xs, ys) } else { false }
+  }
+}
+
+fn step_is(st: [Int], op: String, want: [Int]) : Bool = match step(st, op) {
+  Some(v) -> li_eq(v, want)
+  None -> false
+}
+
+fn step_bad(st: [Int], op: String) : Bool = match step(st, op) {
+  Some(_v) -> false
+  None -> true
+}
+
+fn run_is(prog: [String], want: Int) : Bool = match run(prog) {
+  Some(v) -> v == want
+  None -> false
+}
+
+fn run_bad(prog: [String]) : Bool = match run(prog) {
+  Some(_v) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = li_eq(push([2, 1], 3), [3, 2, 1]) and
+    step_is([3, 2], "add", [5]) and
+    step_is([3, 2, 9], "mul", [6, 9]) and
+    step_is([1, 2], "swap", [2, 1]) and
+    step_is([7], "dup", [7, 7]) and
+    step_is([7, 8], "pop", [8]) and
+    step_bad([1], "add") and
+    step_bad([], "dup") and
+    step_bad([1, 2], "sub") and
+    run_is(["2", "3", "add"], 5) and
+    run_is(["2", "3", "mul", "dup", "add"], 12) and
+    run_is(["07"], 7) and
+    run_is(["-4", "2", "add"], -2) and
+    run_is(["1", "2", "swap", "pop"], 2) and
+    run_bad(["4", "pop"]) and
+    run_bad(["swap"]) and
+    run_bad(["-"]) and
+    run_bad([]) and
+    run_bad(["1", "2"]) and
+    run_bad(["+5"])
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

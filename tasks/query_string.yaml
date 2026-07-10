@@ -1,0 +1,41 @@
+id: query_string
+tier: module
+freshness: fresh-ish (URL query pairs without percent-encoding, strict shape rules)
+prompt: |
+  Implement URL-style query-string handling over ASCII text, without any
+  percent-encoding. A parameter is a key/value pair of strings.
+  - parse_query(s): the empty string is the empty parameter list. Otherwise
+    split s on "&"; every piece must contain at least one "=" and is cut at
+    its FIRST "=" — the key is what precedes it (must be non-empty), the
+    value is everything after it (may be empty and may contain more "="
+    characters). Any empty piece or empty key makes the whole input invalid
+    — return the idiomatic absent value. Order is preserved.
+  - get_param(ps, k): the value of the FIRST parameter whose key is k;
+    absent when no key matches.
+  - set_param(ps, k, v): when k exists, replace the FIRST occurrence's
+    value keeping its position (later duplicates untouched); when it does
+    not, append the new parameter at the END. Always succeeds.
+  - render_query(ps): join every pair as key=value with "&" between pairs;
+    the empty list renders as the empty string.
+  Examples: parse "a=1&b=2" -> [a:1, b:2]; parse "k=a=b" -> [k:"a=b"];
+  parse "a=" -> [a:""]; parse "=x" invalid; parse "a=1&&b=2" invalid;
+  parse "flag" invalid; render(parse(s)) == s for every valid s.
+signatures:
+  kaikai: |
+    pub type Param = { key: String, value: String }
+    pub fn parse_query(s: String) : Option[[Param]]
+    pub fn get_param(ps: [Param], k: String) : Option[String]
+    pub fn set_param(ps: [Param], k: String, v: String) : [Param]
+    pub fn render_query(ps: [Param]) : String
+  rust: |
+    pub struct Param { pub key: String, pub value: String }
+    pub fn parse_query(s: &str) -> Option<Vec<Param>>
+    pub fn get_param(ps: &[Param], k: &str) -> Option<String>
+    pub fn set_param(ps: &[Param], k: &str, v: &str) -> Vec<Param>
+    pub fn render_query(ps: &[Param]) -> String
+  go: |
+    type Param struct { Key, Value string }
+    func ParseQuery(s string) ([]Param, bool)
+    func GetParam(ps []Param, k string) (string, bool)
+    func SetParam(ps []Param, k, v string) []Param
+    func RenderQuery(ps []Param) string

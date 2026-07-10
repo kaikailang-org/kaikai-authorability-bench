@@ -1,0 +1,37 @@
+id: turtle_walk
+tier: module
+freshness: fresh (grid turtle with quarter-turn arithmetic)
+prompt: |
+  Implement a turtle on an integer grid. Directions are 0 = north, 1 =
+  east, 2 = south, 3 = west; moving north increases y, east increases x.
+  - turtle_new(): at the origin (0, 0) facing north.
+  - turn(t, r): rotate r quarter-turns CLOCKWISE; r may be negative
+    (counter-clockwise) or larger than 3 — the resulting direction is
+    always 0..3.
+  - forward(t, n): move n steps in the facing direction; n < 0 moves zero
+    steps (clamp, not error).
+  - walk(cmds): from a new turtle apply each command: "L" = turn -1,
+    "R" = turn 1, "F" = forward 1. Any other command makes the whole walk
+    invalid — return the idiomatic absent value.
+  Examples: turn(new, -1) faces west (3); turn(new, 6) faces south (2);
+  walk(["F","R","F","F"]) ends at (2, 1) facing east; walk(["X"]) invalid;
+  forward(t, -5) leaves the position unchanged.
+signatures:
+  kaikai: |
+    pub type Turtle = { x: Int, y: Int, dir: Int }
+    pub fn turtle_new() : Turtle
+    pub fn turn(t: Turtle, r: Int) : Turtle
+    pub fn forward(t: Turtle, n: Int) : Turtle
+    pub fn walk(cmds: [String]) : Option[Turtle]
+  rust: |
+    pub struct Turtle { pub x: i64, pub y: i64, pub dir: i64 }
+    pub fn turtle_new() -> Turtle
+    pub fn turn(t: &Turtle, r: i64) -> Turtle
+    pub fn forward(t: &Turtle, n: i64) -> Turtle
+    pub fn walk(cmds: &[&str]) -> Option<Turtle>
+  go: |
+    type Turtle struct { X, Y, Dir int64 }
+    func TurtleNew() Turtle
+    func Turn(t Turtle, r int64) Turtle
+    func Forward(t Turtle, n int64) Turtle
+    func Walk(cmds []string) (Turtle, bool)

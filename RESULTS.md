@@ -193,8 +193,9 @@ claude-sonnet-5 rust     full            6   1.00    1.00    137160
   in the module tier where each language shows its own idiom.
 - **Strings are ASCII-only.** Unicode segmentation differs enough across
   the three languages that fair hidden tests need careful spec work.
-- **Module tier: 3 pilots authored** (token_bucket / inventory_ops /
-  text_table — one per stdlib-surface class); ~12 more to reach the target.
+- **Module tier: 9 authored** (3 per stdlib-surface class: token_bucket /
+  stack_calc / turtle_walk, inventory_ops / ledger_accounts / grade_book,
+  text_table / query_string / log_summary); ~6 more to reach the target.
   **Repo tier (~10) unauthored.**
 - Runner ablations (`--config no-info|no-holes|flat-diags`) exist but have
   not been exercised in a real run yet.

@@ -1,0 +1,41 @@
+pub type LogLine = { level: String, message: String }
+
+fn try_level(s: String, lvl: String) : Option[LogLine] =
+  match s.drop_prefix("#{lvl}: ") {
+    Some(rest) -> Some(LogLine { level: lvl, message: rest })
+    None -> None
+  }
+
+pub fn parse_line(s: String) : Option[LogLine] =
+  match try_level(s, "INFO") {
+    Some(l) -> Some(l)
+    None -> match try_level(s, "WARN") {
+      Some(l) -> Some(l)
+      None -> try_level(s, "ERROR")
+    }
+  }
+
+fn is_level(lvl: String) : Bool = lvl == "INFO" or lvl == "WARN" or lvl == "ERROR"
+
+fn count_go(lines: [String], level: String, acc: Int) : Option[Int] = match lines {
+  [] -> Some(acc)
+  [s, ...t] -> match parse_line(s) {
+    None -> None
+    Some(l) -> count_go(t, level, if l.level == level { acc + 1 } else { acc })
+  }
+}
+
+pub fn count_level(lines: [String], level: String) : Option[Int] =
+  if is_level(level) { count_go(lines, level, 0) } else { None }
+
+pub fn summary(lines: [String]) : Option[String] =
+  match count_level(lines, "INFO") {
+    None -> None
+    Some(i) -> match count_level(lines, "WARN") {
+      None -> None
+      Some(w) -> match count_level(lines, "ERROR") {
+        None -> None
+        Some(e) -> Some("INFO=#{i} WARN=#{w} ERROR=#{e}")
+      }
+    }
+  }

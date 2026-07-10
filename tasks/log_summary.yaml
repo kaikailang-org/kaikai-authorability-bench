@@ -1,0 +1,38 @@
+id: log_summary
+tier: module
+freshness: fresh (strict log-line parser with exact-output summary)
+prompt: |
+  Implement a log summarizer. A well-formed log line is exactly
+  "LEVEL: message" where LEVEL is one of INFO, WARN, ERROR (uppercase,
+  nothing else) and the separator is a colon followed by ONE space; the
+  message is everything after that space and may be empty or contain
+  further colons. Anything else — unknown level, missing colon, missing
+  space, lowercase — is malformed.
+  - parse_line(s): the level and message of one line; the idiomatic absent
+    value when malformed.
+  - count_level(lines, level): how many lines have exactly that level.
+    Invalid when ANY line is malformed or when level is not one of the
+    three levels.
+  - summary(lines): the exact string "INFO=a WARN=b ERROR=c" with the three
+    counts in that fixed order. Invalid when any line is malformed. The
+    empty list gives "INFO=0 WARN=0 ERROR=0".
+  Examples: parse "WARN: disk low" -> level WARN, message "disk low";
+  parse "INFO: " -> level INFO, empty message; parse "INFO:x" invalid;
+  parse "DEBUG: x" invalid; parse "info: x" invalid;
+  summary(["INFO: a", "ERROR: b", "INFO: c"]) -> "INFO=2 WARN=0 ERROR=1".
+signatures:
+  kaikai: |
+    pub type LogLine = { level: String, message: String }
+    pub fn parse_line(s: String) : Option[LogLine]
+    pub fn count_level(lines: [String], level: String) : Option[Int]
+    pub fn summary(lines: [String]) : Option[String]
+  rust: |
+    pub struct LogLine { pub level: String, pub message: String }
+    pub fn parse_line(s: &str) -> Option<LogLine>
+    pub fn count_level(lines: &[&str], level: &str) -> Option<i64>
+    pub fn summary(lines: &[&str]) -> Option<String>
+  go: |
+    type LogLine struct { Level, Message string }
+    func ParseLine(s string) (LogLine, bool)
+    func CountLevel(lines []string, level string) (int64, bool)
+    func Summary(lines []string) (string, bool)

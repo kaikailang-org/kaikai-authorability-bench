@@ -1,0 +1,57 @@
+pub fn push(st: [Int], v: Int) : [Int] = [v, ...st]
+
+fn digits_val(cs: [Char], acc: Int) : Option[Int] = match cs {
+  [] -> Some(acc)
+  [c, ...t] -> if char.is_digit(c) { digits_val(t, acc * 10 + (char_to_int(c) - 48)) } else { None }
+}
+
+fn lit(s: String) : Option[Int] = match s.chars() {
+  ['-'] -> None
+  ['-', ...t] -> match digits_val(t, 0) {
+    Some(v) -> Some(0 - v)
+    None -> None
+  }
+  [] -> None
+  cs -> digits_val(cs, 0)
+}
+
+pub fn step(st: [Int], op: String) : Option[[Int]] =
+  if op == "add" or op == "mul" {
+    match st {
+      [b, a, ...rest] -> Some([if op == "add" { a + b } else { a * b }, ...rest])
+      _ -> None
+    }
+  } else { if op == "swap" {
+    match st {
+      [b, a, ...rest] -> Some([a, b, ...rest])
+      _ -> None
+    }
+  } else { if op == "dup" {
+    match st {
+      [a, ...rest] -> Some([a, a, ...rest])
+      _ -> None
+    }
+  } else { if op == "pop" {
+    match st {
+      [_a, ...rest] -> Some(rest)
+      _ -> None
+    }
+  } else {
+    match lit(op) {
+      Some(v) -> Some(push(st, v))
+      None -> None
+    }
+  } } } }
+
+fn run_go(st: [Int], prog: [String]) : Option[Int] = match prog {
+  [] -> match st {
+    [x] -> Some(x)
+    _ -> None
+  }
+  [op, ...rest] -> match step(st, op) {
+    Some(st2) -> run_go(st2, rest)
+    None -> None
+  }
+}
+
+pub fn run(prog: [String]) : Option[Int] = run_go([], prog)

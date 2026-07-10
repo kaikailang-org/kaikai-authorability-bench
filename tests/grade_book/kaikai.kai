@@ -1,0 +1,54 @@
+fn add(book: [Student], id: Int, score: Int) : [Student] = match add_score(book, id, score) {
+  Some(b) -> b
+  None -> []
+}
+
+fn av_is(book: [Student], id: Int, want: Int) : Bool = match average_floor(book, id) {
+  Some(v) -> v == want
+  None -> false
+}
+
+fn av_bad(book: [Student], id: Int) : Bool = match average_floor(book, id) {
+  Some(_v) -> false
+  None -> true
+}
+
+fn top_is(book: [Student], want: Int) : Bool = match top_student(book) {
+  Some(v) -> v == want
+  None -> false
+}
+
+fn top_bad(book: [Student]) : Bool = match top_student(book) {
+  Some(_v) -> false
+  None -> true
+}
+
+fn add_bad(book: [Student], id: Int, score: Int) : Bool = match add_score(book, id, score) {
+  Some(_b) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let b1 = add(add([], 1, 90), 1, 95)
+  let shape1 = match b1 {
+    [s] -> s.id == 1
+    _ -> false
+  }
+  let b2 = add(b1, 1, 92)
+  let b3 = add(b2, 2, 80)
+  let shape2 = match b3 {
+    [s, r] -> s.id == 1 and r.id == 2
+    _ -> false
+  }
+  let tie = add(add([], 1, 92), 2, 92)
+  let nb = [Student { id: 7, scores: [] }, Student { id: 8, scores: [50] }]
+  let bounds = add_bad(b3, 1, 101) and add_bad(b3, 1, 0 - 1) and
+    av_is(add(b3, 3, 0), 3, 0) and av_is(add(b3, 3, 100), 3, 100)
+  let ok = shape1 and av_is(b1, 1, 92) and
+    av_is(b2, 1, 92) and
+    shape2 and top_is(b3, 1) and
+    top_bad(tie) and top_bad([]) and
+    top_is(nb, 8) and av_bad(nb, 7) and av_bad(nb, 99) and
+    bounds
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

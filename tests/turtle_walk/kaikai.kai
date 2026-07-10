@@ -1,0 +1,30 @@
+fn at(t: Turtle, x: Int, y: Int, d: Int) : Bool =
+  t.x == x and t.y == y and t.dir == d
+
+fn walk_at(cmds: [String], x: Int, y: Int, d: Int) : Bool = match walk(cmds) {
+  Some(t) -> at(t, x, y, d)
+  None -> false
+}
+
+fn walk_bad(cmds: [String]) : Bool = match walk(cmds) {
+  Some(_t) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = at(turtle_new(), 0, 0, 0) and
+    turn(turtle_new(), 0 - 1).dir == 3 and
+    turn(turtle_new(), 6).dir == 2 and
+    turn(turtle_new(), 0 - 7).dir == 1 and
+    turn(Turtle { x: 5, y: 5, dir: 3 }, 1).dir == 0 and
+    at(forward(turtle_new(), 3), 0, 3, 0) and
+    at(forward(Turtle { x: 0, y: 0, dir: 2 }, 2), 0, 0 - 2, 2) and
+    at(forward(Turtle { x: 1, y: 1, dir: 3 }, 4), 0 - 3, 1, 3) and
+    at(forward(Turtle { x: 9, y: 9, dir: 1 }, 0 - 5), 9, 9, 1) and
+    walk_at(["F", "R", "F", "F"], 2, 1, 1) and
+    walk_at(["L", "F", "F", "L", "F"], 0 - 2, 0 - 1, 2) and
+    walk_at([], 0, 0, 0) and
+    walk_bad(["F", "X"]) and
+    walk_bad(["f"])
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}
