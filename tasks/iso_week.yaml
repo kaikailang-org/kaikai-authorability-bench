@@ -1,0 +1,20 @@
+id: iso_week
+tier: function
+freshness: classic spec (ISO-8601 week numbering), notoriously edge-dense; from-scratch calendar math
+prompt: |
+  For a valid Gregorian date (year >= 1600) return its ISO-8601 week
+  numbering: the ISO year and the week number within it, as a record with
+  the exact shape given in the signature. Rules: weeks run Monday..Sunday;
+  week 1 of an ISO year is the week that contains January 4 of that year
+  (equivalently, the week containing the year's first Thursday). Dates in
+  late December can therefore belong to week 1 of the NEXT ISO year, and
+  dates in early January to week 52 or 53 of the PREVIOUS one. Leap years:
+  divisible by 4, except centuries, unless divisible by 400. No date
+  libraries: compute the weekday yourself — January 1, 2000 was a Saturday.
+  Examples: 2026-01-01 -> {year: 2026, week: 1}; 2016-01-01 ->
+  {year: 2015, week: 53}; 2025-12-29 -> {year: 2026, week: 1}; 2021-01-03 ->
+  {year: 2020, week: 53}; 2020-02-29 -> {year: 2020, week: 9}.
+signatures:
+  kaikai: "pub type IsoWeek = { year: Int, week: Int }  //  pub fn iso_week(y: Int, m: Int, d: Int) : IsoWeek"
+  rust:   "pub struct IsoWeek { pub year: i64, pub week: i64 }  //  pub fn iso_week(y: i64, m: i64, d: i64) -> IsoWeek"
+  go:     "type IsoWeek struct { Year, Week int64 }  //  func IsoWeekOf(y, m, d int64) IsoWeek"

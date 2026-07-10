@@ -1,0 +1,17 @@
+id: base64_encode
+tier: function
+freshness: classic-algorithm (RFC 4648 Base64), training overlap likely; from-scratch bit packing
+prompt: |
+  Encode a list of byte values to standard Base64 (RFC 4648): pack the bytes
+  most-significant-bit first, take 6 bits at a time as an index into the
+  alphabet "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+  and pad the output with '=' so its length is a multiple of 4 (one trailing
+  byte yields "XX==", two yield "XXX="). Any input value outside 0..255
+  makes the whole input invalid: return the idiomatic absent value. The
+  empty list encodes to the empty string. Examples: [77,97,110] -> "TWFu";
+  [77,97] -> "TWE="; [77] -> "TQ=="; [102,111,111,98] -> "Zm9vYg==";
+  [256] -> invalid; [-1] -> invalid.
+signatures:
+  kaikai: "pub fn base64_encode(bytes: [Int]) : Option[String]"
+  rust:   "pub fn base64_encode(bytes: &[i64]) -> Option<String>"
+  go:     "func Base64Encode(bytes []int64) (string, bool)"

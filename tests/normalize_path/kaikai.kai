@@ -1,0 +1,27 @@
+fn chk_some(s: String, want: String) : Bool = match normalize_path(s) {
+  Some(v) -> v == want
+  None -> false
+}
+
+fn chk_none(s: String) : Bool = match normalize_path(s) {
+  Some(_) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = chk_some("/a//b/./c/", "/a/b/c") and
+    chk_some("/a/../../b", "/b") and
+    chk_some("/../", "/") and
+    chk_some("/...", "/...") and
+    chk_some("/", "/") and
+    chk_none("") and
+    chk_none("a/b") and
+    chk_some("/a/b/../c", "/a/c") and
+    chk_some("/a/./b/..", "/a") and
+    chk_some("/..hidden", "/..hidden") and
+    chk_some("/a.b/c.", "/a.b/c.") and
+    chk_some("//", "/") and
+    chk_some("/a/../a/../a", "/a") and
+    chk_none(".")
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

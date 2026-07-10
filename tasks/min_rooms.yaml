@@ -1,0 +1,17 @@
+id: min_rooms
+tier: function
+freshness: classic-algorithm shape (meeting rooms sweep), validation twist and touching rule are fresh
+prompt: |
+  Meetings are half-open intervals [start, finish). Return the minimum
+  number of rooms needed so that no two meetings sharing a room overlap in
+  time; meetings that merely touch (one finishes exactly when another
+  starts) can share a room. Any meeting with start >= finish makes the whole
+  input invalid: return the idiomatic absent value. No meetings -> 0. A
+  quadratic scan is acceptable. Define the record type with the exact shape
+  given in the signature. Examples: [{0,30},{5,10},{15,20}] -> 2;
+  [{1,3},{3,5}] -> 1; [{7,10},{2,4}] -> 1; [{1,5},{2,5},{3,5}] -> 3;
+  [{5,5}] -> invalid.
+signatures:
+  kaikai: "pub type Meeting = { start: Int, finish: Int }  //  pub fn min_rooms(ms: [Meeting]) : Option[Int]"
+  rust:   "pub struct Meeting { pub start: i64, pub finish: i64 }  //  pub fn min_rooms(ms: &[Meeting]) -> Option<i64>"
+  go:     "type Meeting struct { Start, Finish int64 }  //  func MinRooms(ms []Meeting) (int64, bool)"

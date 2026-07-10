@@ -1,0 +1,28 @@
+fn chk_some(tokens: [String], want: Int) : Bool = match eval_rpn(tokens) {
+  Some(v) -> v == want
+  None -> false
+}
+
+fn chk_none(tokens: [String]) : Bool = match eval_rpn(tokens) {
+  Some(_) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = chk_some(["3", "4", "+"], 7) and
+    chk_some(["5", "1", "2", "+", "4", "*", "-"], -7) and
+    chk_some(["7", "-2", "/"], -3) and
+    chk_some(["-7", "2", "/"], -3) and
+    chk_some(["42"], 42) and
+    chk_some(["2", "3", "4", "*", "+"], 14) and
+    chk_some(["0", "5", "/"], 0) and
+    chk_none(["8", "0", "/"]) and
+    chk_none(["3", "4"]) and
+    chk_none(["+"]) and
+    chk_none(["3", "-"]) and
+    chk_none([]) and
+    chk_none(["3", "x", "+"]) and
+    chk_none(["-"]) and
+    chk_none(["+5", "1", "+"])
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

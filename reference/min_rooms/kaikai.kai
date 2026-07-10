@@ -1,0 +1,22 @@
+pub type Meeting = { start: Int, finish: Int }
+
+fn all_valid(ms: [Meeting]) : Bool = match ms {
+  [] -> true
+  [m, ...t] -> if m.start < m.finish { all_valid(t) } else { false }
+}
+
+fn count_at(ms: [Meeting], t0: Int) : Int = match ms {
+  [] -> 0
+  [m, ...t] -> (if m.start <= t0 and t0 < m.finish { 1 } else { 0 }) + count_at(t, t0)
+}
+
+fn best_of(all: [Meeting], ms: [Meeting], acc: Int) : Int = match ms {
+  [] -> acc
+  [m, ...t] -> {
+    let c = count_at(all, m.start)
+    best_of(all, t, if c > acc { c } else { acc })
+  }
+}
+
+pub fn min_rooms(ms: [Meeting]) : Option[Int] =
+  if all_valid(ms) { Some(best_of(ms, ms, 0)) } else { None }

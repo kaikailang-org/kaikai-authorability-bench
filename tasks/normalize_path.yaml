@@ -1,0 +1,18 @@
+id: normalize_path
+tier: function
+freshness: classic-algorithm shape (path simplification), strict validity rules are fresh
+prompt: |
+  Normalize a POSIX-style absolute path. The input must start with '/';
+  anything else is invalid — return the idiomatic absent value. Split on
+  '/', drop empty components (collapsing repeated slashes) and "."
+  components, and resolve each ".." by removing the previous component —
+  ".." at the root stays at the root. Components are otherwise opaque names:
+  "...", "a.b" and ".hidden" are ordinary names. The result starts with '/'
+  and has no trailing slash — unless the whole result is the root, which is
+  exactly "/". Examples: "/a//b/./c/" -> "/a/b/c"; "/a/../../b" -> "/b";
+  "/../" -> "/"; "/..." -> "/..."; "/" -> "/"; "" -> invalid; "a/b" ->
+  invalid.
+signatures:
+  kaikai: "pub fn normalize_path(s: String) : Option[String]"
+  rust:   "pub fn normalize_path(s: &str) -> Option<String>"
+  go:     "func NormalizePath(s string) (string, bool)"

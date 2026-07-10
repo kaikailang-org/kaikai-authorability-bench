@@ -1,0 +1,27 @@
+fn abc() : String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+
+fn s6(v: Int, div: Int) : String = abc().slice((v / div) % 64, 1)
+
+fn valid(bs: [Int]) : Bool = match bs {
+  [] -> true
+  [b, ...t] -> if b >= 0 and b <= 255 { valid(t) } else { false }
+}
+
+fn enc(bs: [Int]) : String = match bs {
+  [a, b, c, ...t] -> {
+    let v = a * 65536 + b * 256 + c
+    "#{s6(v, 262144)}#{s6(v, 4096)}#{s6(v, 64)}#{s6(v, 1)}#{enc(t)}"
+  }
+  [a, b] -> {
+    let v = a * 65536 + b * 256
+    "#{s6(v, 262144)}#{s6(v, 4096)}#{s6(v, 64)}="
+  }
+  [a] -> {
+    let v = a * 65536
+    "#{s6(v, 262144)}#{s6(v, 4096)}=="
+  }
+  [] -> ""
+}
+
+pub fn base64_encode(bytes: [Int]) : Option[String] =
+  if valid(bytes) { Some(enc(bytes)) } else { None }

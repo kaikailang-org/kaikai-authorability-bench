@@ -1,0 +1,27 @@
+fn chk_some(bs: [Int], want: String) : Bool = match base64_encode(bs) {
+  Some(v) -> v == want
+  None -> false
+}
+
+fn chk_none(bs: [Int]) : Bool = match base64_encode(bs) {
+  Some(_) -> false
+  None -> true
+}
+
+fn main() : Int / Stdout = {
+  let ok = chk_some([77, 97, 110], "TWFu") and
+    chk_some([77, 97], "TWE=") and
+    chk_some([77], "TQ==") and
+    chk_some([102, 111, 111, 98], "Zm9vYg==") and
+    chk_some([102, 111, 111, 98, 97], "Zm9vYmE=") and
+    chk_some([102, 111, 111, 98, 97, 114], "Zm9vYmFy") and
+    chk_some([], "") and
+    chk_some([0], "AA==") and
+    chk_some([0, 0, 0], "AAAA") and
+    chk_some([255, 255, 255], "////") and
+    chk_some([251], "+w==") and
+    chk_none([256]) and
+    chk_none([-1]) and
+    chk_none([77, 300, 97])
+  if ok { Stdout.print("OK") 0 } else { Stdout.print("FAIL") 1 }
+}

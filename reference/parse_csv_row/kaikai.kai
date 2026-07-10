@@ -1,0 +1,35 @@
+fn to_str(cs: [Char]) : String = (cs | (c) => "#{c}").join("")
+
+fn q_field(cs: [Char], acc: [Char]) : Option[([Char], [Char])] = match cs {
+  ['"', '"', ...t] -> q_field(t, ['"', ...acc])
+  ['"', ...t] -> Some((acc.reverse(), t))
+  [c, ...t] -> q_field(t, [c, ...acc])
+  [] -> None
+}
+
+fn u_field(cs: [Char], acc: [Char]) : Option[([Char], [Char])] = match cs {
+  [',', ...t] -> Some((acc.reverse(), cs))
+  ['"', ...t] -> None
+  [c, ...t] -> u_field(t, [c, ...acc])
+  [] -> Some((acc.reverse(), []))
+}
+
+fn fields(cs: [Char]) : Option[[String]] = {
+  let fr = match cs {
+    ['"', ...t] -> q_field(t, [])
+    _ -> u_field(cs, [])
+  }
+  match fr {
+    None -> None
+    Some((f, rest)) -> match rest {
+      [] -> Some([to_str(f)])
+      [',', ...t2] -> match fields(t2) {
+        Some(more) -> Some([to_str(f), ...more])
+        None -> None
+      }
+      _ -> None
+    }
+  }
+}
+
+pub fn parse_csv_row(s: String) : Option[[String]] = fields(s.chars())
