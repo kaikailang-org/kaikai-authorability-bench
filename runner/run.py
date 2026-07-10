@@ -260,6 +260,7 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
     fb, rounds, green = "(first attempt)", 0, False
     tin = tout = 0
     have_usage = False
+    agent_errors = 0
     transcript = []
     for r in range(1, max_rounds + 1):
         rounds = r
@@ -277,6 +278,7 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
                  "tokens_in": ti, "tokens_out": to,
                  "duration_s": round(time.time() - t0, 1)}
         if not ok:
+            agent_errors += 1
             fb = sol
             entry["feedback"] = fb
             transcript.append(entry)
@@ -297,19 +299,28 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
     tpath = run_dir / "transcripts" / f"{task['id']}-{lang}-{seed}.json"
     tpath.write_text(json.dumps(transcript, indent=2))
     return {"task": task["id"], "lang": lang, "seed": seed, "config": config,
-            "green": green, "rounds": rounds,
+            "green": green, "rounds": rounds, "agent_errors": agent_errors,
             "tokens_in": tin if have_usage else None,
             "tokens_out": tout if have_usage else None}
 
 def report(run_dirs):
     """Aggregate results.jsonl records across runs; one row per lang x config.
-    success@k = fraction of cells green within k rounds."""
+    success@k = fraction of cells green within k COMPILE rounds — rounds where
+    the agent itself errored (timeout, API failure) don't count as attempts.
+    Cells that never reached a compile are excluded as infra failures."""
     recs = []
     for rd in run_dirs:
         f = Path(rd) / "results.jsonl"
         if not f.exists():
             sys.exit(f"no results.jsonl in {rd}")
         recs += [json.loads(l) for l in f.read_text().splitlines() if l.strip()]
+    for r in recs:
+        r["rounds"] -= r.get("agent_errors", 0)
+    infra = [r for r in recs if r["rounds"] == 0 and not r["green"]]
+    recs = [r for r in recs if r["rounds"] > 0 or r["green"]]
+    if infra:
+        print(f"excluded {len(infra)} infra cells (every round was an agent "
+              f"error): {', '.join(sorted({r['task'] + '/' + r['lang'] for r in infra}))}\n")
     if not recs:
         sys.exit("no records")
     maxr = max(r["rounds"] for r in recs)

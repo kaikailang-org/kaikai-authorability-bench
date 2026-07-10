@@ -19,7 +19,10 @@ say exactly where — see *The ratchet* below.
 ## Metrics
 
 - **success@1** — green (compiles + hidden tests pass) on the first attempt.
-- **rounds-to-green** — attempts until green (cap: 5).
+- **rounds-to-green** — compile attempts until green (cap: 5). Rounds where
+  the agent itself failed (timeout, API error) are logged per cell as
+  `agent_errors` but are not compile attempts; cells that never reached a
+  compile are excluded from the report as infra failures.
 - **tokens** — total spent per task.
 
 Each cell (task × language) runs **5 seeds**; we report means and curves, never
