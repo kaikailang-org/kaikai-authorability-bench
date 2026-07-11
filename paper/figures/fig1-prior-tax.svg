@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="380" viewBox="0 0 640 380" font-family="Helvetica, Arial, sans-serif">
+  <rect width="640" height="380" fill="#ffffff"/>
+  <!-- legend -->
+  <g font-size="11" fill="#4a4943">
+    <rect x="330" y="12" width="10" height="10" rx="2" fill="#2a78d6"/><text x="344" y="21">Fable 5</text>
+    <rect x="410" y="12" width="10" height="10" rx="2" fill="#1baf7a"/><text x="424" y="21">Opus 4.8</text>
+    <rect x="498" y="12" width="10" height="10" rx="2" fill="#eda100"/><text x="512" y="21">Sonnet 5</text>
+  </g>
+  <!-- gridlines + y labels (tokens per cell, thousands) -->
+  <g stroke="#e8e7e2" stroke-width="1">
+    <line x1="64" y1="263" x2="624" y2="263"/>
+    <line x1="64" y1="195" x2="624" y2="195"/>
+    <line x1="64" y1="126" x2="624" y2="126"/>
+    <line x1="64" y1="57" x2="624" y2="57"/>
+  </g>
+  <g font-size="10" fill="#6b6a63" text-anchor="end">
+    <text x="58" y="336">0</text>
+    <text x="58" y="267">400k</text>
+    <text x="58" y="199">800k</text>
+    <text x="58" y="130">1.2M</text>
+    <text x="58" y="61">1.6M</text>
+  </g>
+  <line x1="64" y1="332" x2="624" y2="332" stroke="#4a4943" stroke-width="1"/>
+  <!-- Go group -->
+  <path d="M110,332 L110,318 Q110,314 114,314 L136,314 Q140,314 140,318 L140,332 Z" fill="#2a78d6"/>
+  <path d="M142,332 L142,312 Q142,308 146,308 L168,308 Q172,308 172,312 L172,332 Z" fill="#1baf7a"/>
+  <path d="M174,332 L174,283 Q174,279 178,279 L200,279 Q204,279 204,283 L204,332 Z" fill="#eda100"/>
+  <g font-size="9.5" fill="#4a4943" text-anchor="middle">
+    <text x="125" y="309">105k</text><text x="157" y="303">137k</text><text x="189" y="274">308k</text>
+  </g>
+  <!-- Rust group -->
+  <path d="M297,332 L297,314 Q297,310 301,310 L323,310 Q327,310 327,314 L327,332 Z" fill="#2a78d6"/>
+  <path d="M329,332 L329,321 Q329,317 333,317 L355,317 Q359,317 359,321 L359,332 Z" fill="#1baf7a"/>
+  <path d="M361,332 L361,291 Q361,287 365,287 L387,287 Q391,287 391,291 L391,332 Z" fill="#eda100"/>
+  <g font-size="9.5" fill="#4a4943" text-anchor="middle">
+    <text x="312" y="305">129k</text><text x="344" y="312">88k</text><text x="376" y="282">260k</text>
+  </g>
+  <!-- kaikai group -->
+  <path d="M483,332 L483,251 Q483,247 487,247 L509,247 Q513,247 513,251 L513,332 Z" fill="#2a78d6"/>
+  <path d="M515,332 L515,159 Q515,155 519,155 L541,155 Q545,155 545,159 L545,332 Z" fill="#1baf7a"/>
+  <path d="M547,332 L547,58 Q547,54 551,54 L573,54 Q577,54 577,58 L577,332 Z" fill="#eda100"/>
+  <g font-size="9.5" fill="#4a4943" text-anchor="middle">
+    <text x="498" y="242">494k</text><text x="530" y="150">1.03M</text><text x="562" y="49">1.62M</text>
+  </g>
+  <!-- x labels -->
+  <g font-size="12" fill="#33322e" text-anchor="middle">
+    <text x="157" y="354">Go</text>
+    <text x="344" y="354">Rust</text>
+    <text x="530" y="354">kaikai</text>
+  </g>
+  <text x="64" y="24" font-size="11" fill="#6b6a63">tokens per cell</text>
+</svg>

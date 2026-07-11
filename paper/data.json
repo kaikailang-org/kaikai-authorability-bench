@@ -1,0 +1,177 @@
+{
+ "?|kaikai|full|calib": {
+  "n": 2,
+  "s1": 0.5,
+  "tok": 581617
+ },
+ "GLM-5.2|go|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": null
+ },
+ "GLM-5.2|go|full|modules": {
+  "n": 18,
+  "s1": 0.944,
+  "tok": null
+ },
+ "GLM-5.2|kaikai|full|calib": {
+  "n": 1,
+  "s1": 1.0,
+  "tok": null
+ },
+ "GLM-5.2|kaikai|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": null
+ },
+ "GLM-5.2|kaikai|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": null
+ },
+ "GLM-5.2|rust|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": null
+ },
+ "GLM-5.2|rust|full|modules": {
+  "n": 18,
+  "s1": 0.944,
+  "tok": null
+ },
+ "claude-fable-5|go|full|calib": {
+  "n": 20,
+  "s1": 1.0,
+  "tok": 117165
+ },
+ "claude-fable-5|go|full|hard": {
+  "n": 8,
+  "s1": 1.0,
+  "tok": 105068
+ },
+ "claude-fable-5|go|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": 132727
+ },
+ "claude-fable-5|kaikai|flat-diags|calib": {
+  "n": 20,
+  "s1": 1.0,
+  "tok": 423123
+ },
+ "claude-fable-5|kaikai|full|calib": {
+  "n": 20,
+  "s1": 1.0,
+  "tok": 451510
+ },
+ "claude-fable-5|kaikai|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 493786
+ },
+ "claude-fable-5|kaikai|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": 263546
+ },
+ "claude-fable-5|kaikai|no-holes|calib": {
+  "n": 20,
+  "s1": 1.0,
+  "tok": 478251
+ },
+ "claude-fable-5|kaikai|no-info|calib": {
+  "n": 20,
+  "s1": 1.0,
+  "tok": 568080
+ },
+ "claude-fable-5|kaikai|no-info|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 362941
+ },
+ "claude-fable-5|rust|full|calib": {
+  "n": 20,
+  "s1": 1.0,
+  "tok": 114415
+ },
+ "claude-fable-5|rust|full|hard": {
+  "n": 8,
+  "s1": 1.0,
+  "tok": 128711
+ },
+ "claude-fable-5|rust|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": 133785
+ },
+ "claude-opus-4-8|go|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 137359
+ },
+ "claude-opus-4-8|go|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": 153806
+ },
+ "claude-opus-4-8|kaikai|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 1031254
+ },
+ "claude-opus-4-8|kaikai|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": 430175
+ },
+ "claude-opus-4-8|kaikai|no-info|hard": {
+  "n": 12,
+  "s1": 0.917,
+  "tok": 443929
+ },
+ "claude-opus-4-8|rust|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 88095
+ },
+ "claude-opus-4-8|rust|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": 89925
+ },
+ "claude-sonnet-5|go|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 308486
+ },
+ "claude-sonnet-5|go|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": 228590
+ },
+ "claude-sonnet-5|kaikai|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 1618727
+ },
+ "claude-sonnet-5|kaikai|full|modules": {
+  "n": 18,
+  "s1": 0.944,
+  "tok": 675072
+ },
+ "claude-sonnet-5|kaikai|no-info|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 679597
+ },
+ "claude-sonnet-5|rust|full|hard": {
+  "n": 12,
+  "s1": 1.0,
+  "tok": 260441
+ },
+ "claude-sonnet-5|rust|full|modules": {
+  "n": 18,
+  "s1": 1.0,
+  "tok": 151922
+ }
+}
