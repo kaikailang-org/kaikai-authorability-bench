@@ -214,6 +214,32 @@ claude-sonnet-5 rust     full           12   1.00    1.00    159302
   non-Claude models. The robust, always-measurable signal is the **cost
   dimension**, which discriminates in every experiment so far.
 
+## First non-Claude model: GLM-5.2 via opencode (90 cells)
+
+Hard batch (6 × 3 × 2) plus all nine modules (9 × 3 × 2), agent command
+`opencode run --auto --dir {cwd}`, model `hf:zai-org/GLM-5.2`. Token counts
+are unknown (opencode's output format carries no usage the runner parses
+yet); rounds and greens are fully comparable.
+
+```
+GLM-5.2  hard batch:  go 12/12 s@1,  kaikai 12/12 s@1,  rust 12/12 s@1
+GLM-5.2  modules:     go 0.94 s@1,   kaikai 18/18 s@1,  rust 0.94 s@1
+```
+
+- **The inversion.** GLM's only two reds — both genuine logic misses,
+  recovered in round 2 — were in the MAINSTREAM languages (a None-unwrap
+  in grade_book × rust, a failed assertion in query_string × go). kaikai:
+  perfect, 30/30 green@1 across both batches. For an open-weight,
+  non-Anthropic model with zero kaikai prior, the tooling-supported new
+  language was not the weak point; its training-prior languages were.
+  n=2 reds, so directional — but the sign matters: the thesis is not
+  Claude-specific.
+- **The harness generalizes.** Second agentic CLI integrated with two
+  generic fixes (the {cwd} anchor for CLIs that pin file tools to a
+  discovered project root, and --model-label). The protocol — stdin
+  prompt, scratch cwd, sol.<ext> delivery, kai shim — held as-is.
+- Gap: an opencode usage parser, if GLM cost curves become interesting.
+
 ## Gaps left open (annotated for the next authoring pass)
 
 - **No Map/Set tasks.** kaikai has `%{}`/`%[]` literals, but Go needs
