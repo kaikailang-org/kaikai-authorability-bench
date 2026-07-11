@@ -248,8 +248,11 @@ def run_agent(agent_cmd, prompt, cwd, timeout, env=None):
     by variadic flags like claude's --allowedTools). Returns (ok,
     solution_or_error, tokens_in, tokens_out, model, raw_stdout). Token and
     model come from claude-style JSON output (`--output-format json`); plain
-    stdout is taken verbatim as the solution, tokens/model unknown (None)."""
-    rc, out, err = sh(agent_cmd, cwd=cwd, timeout=timeout, env=env, stdin=prompt)
+    stdout is taken verbatim as the solution, tokens/model unknown (None).
+    A literal {cwd} in any argument becomes the scratch dir — for CLIs that
+    anchor their file tools to a flag (e.g. opencode --dir) instead of cwd."""
+    cmd = [a.replace("{cwd}", str(cwd)) for a in agent_cmd]
+    rc, out, err = sh(cmd, cwd=cwd, timeout=timeout, env=env, stdin=prompt)
     if rc != 0:
         return False, f"AGENT ERROR (exit {rc}):\n{err[-1000:]}", None, None, None, out
     sol, tin, tout, model = out, None, None, None
@@ -269,7 +272,8 @@ def run_agent(agent_cmd, prompt, cwd, timeout, env=None):
         pass
     return True, strip_fences(sol), tin, tout, model, out
 
-def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config, env):
+def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config, env,
+               model_label=None):
     """Run one task x language x seed to green or round cap. Writes the full
     transcript; returns the summary record."""
     sig = task["signatures"][lang]
@@ -322,7 +326,7 @@ def agent_cell(agent_cmd, task, lang, seed, max_rounds, timeout, run_dir, config
     tpath = run_dir / "transcripts" / f"{task['id']}-{lang}-{seed}.json"
     tpath.write_text(json.dumps(transcript, indent=2))
     return {"task": task["id"], "lang": lang, "seed": seed, "config": config,
-            "model": model, "green": green, "rounds": rounds,
+            "model": model or model_label, "green": green, "rounds": rounds,
             "agent_errors": agent_errors,
             "tokens_in": tin if have_usage else None,
             "tokens_out": tout if have_usage else None}
@@ -372,7 +376,8 @@ def report(run_dirs):
         if stalled:
             print(f"\nstalled {model}/{lang}/{cfg}: {', '.join(stalled)}")
 
-def agent_loop(agent_cmd, langs, seeds, max_rounds, timeout, config, only=None):
+def agent_loop(agent_cmd, langs, seeds, max_rounds, timeout, config, only=None,
+               model_label=None):
     ts = int(time.time())
     while True:
         run_dir = ROOT / "results" / f"run-{ts}"
@@ -400,7 +405,8 @@ def agent_loop(agent_cmd, langs, seeds, max_rounds, timeout, config, only=None):
                     continue
                 for seed in range(seeds):
                     rec = agent_cell(agent_cmd, task, lang, seed, max_rounds,
-                                     timeout, run_dir, config, env)
+                                     timeout, run_dir, config, env,
+                                     model_label=model_label)
                     out.write(json.dumps(rec) + "\n"); out.flush()
                     print(rec)
     print(f"results: {run_dir}")
@@ -418,6 +424,8 @@ if __name__ == "__main__":
     ap.add_argument("--config", choices=CONFIGS, default="full",
                     help="kaikai ablation; other languages are unaffected")
     ap.add_argument("--tasks", help="comma-separated task ids (default: all)")
+    ap.add_argument("--model-label", help="model name recorded per cell when "
+                    "the agent's output doesn't self-report one")
     ap.add_argument("--report", nargs="+", metavar="RUN_DIR",
                     help="aggregate results.jsonl across run dirs")
     ap.add_argument("--flatten-diags", action="store_true",
@@ -433,6 +441,7 @@ if __name__ == "__main__":
     elif a.agent:
         agent_loop(shlex.split(a.agent), langs, a.seeds, a.max_rounds,
                    a.agent_timeout, a.config,
-                   only=set(a.tasks.split(",")) if a.tasks else None)
+                   only=set(a.tasks.split(",")) if a.tasks else None,
+                   model_label=a.model_label)
     else:
         ap.print_help()
