@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="360" viewBox="0 0 520 360" font-family="Helvetica, Arial, sans-serif">
+  <rect width="520" height="360" fill="#ffffff"/>
+  <text x="60" y="24" font-size="11" fill="#6b6a63">kaikai tokens per cell</text>
+  <!-- gridlines -->
+  <g stroke="#e8e7e2" stroke-width="1">
+    <line x1="110" y1="254" x2="420" y2="254"/>
+    <line x1="110" y1="188" x2="420" y2="188"/>
+    <line x1="110" y1="122" x2="420" y2="122"/>
+    <line x1="110" y1="56" x2="420" y2="56"/>
+  </g>
+  <g font-size="10" fill="#6b6a63" text-anchor="end">
+    <text x="104" y="324">0</text>
+    <text x="104" y="258">400k</text>
+    <text x="104" y="192">800k</text>
+    <text x="104" y="126">1.2M</text>
+    <text x="104" y="60">1.6M</text>
+  </g>
+  <line x1="110" y1="320" x2="420" y2="320" stroke="#4a4943" stroke-width="1"/>
+  <!-- slopes: functions x=150, modules x=380 ; y = 320 - v*0.1647 -->
+  <g stroke-width="2" fill="none">
+    <line x1="150" y1="238.6" x2="380" y2="276.5" stroke="#2a78d6"/>
+    <line x1="150" y1="150.2" x2="380" y2="249.2" stroke="#1baf7a"/>
+    <line x1="150" y1="53.3"  x2="380" y2="208.8" stroke="#eda100"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="2">
+    <circle cx="150" cy="238.6" r="4.5" fill="#2a78d6"/>
+    <circle cx="380" cy="276.5" r="4.5" fill="#2a78d6"/>
+    <circle cx="150" cy="150.2" r="4.5" fill="#1baf7a"/>
+    <circle cx="380" cy="249.2" r="4.5" fill="#1baf7a"/>
+    <circle cx="150" cy="53.3"  r="4.5" fill="#eda100"/>
+    <circle cx="380" cy="208.8" r="4.5" fill="#eda100"/>
+  </g>
+  <!-- left value labels -->
+  <g font-size="10" fill="#4a4943" text-anchor="end">
+    <text x="140" y="242">494k</text>
+    <text x="140" y="154">1.03M</text>
+    <text x="140" y="57">1.62M</text>
+  </g>
+  <!-- right direct labels -->
+  <g font-size="11" text-anchor="start">
+    <text x="392" y="280" fill="#4a4943">264k · Fable 5</text>
+    <text x="392" y="253" fill="#4a4943">430k · Opus 4.8</text>
+    <text x="392" y="212" fill="#4a4943">675k · Sonnet 5</text>
+  </g>
+  <!-- x labels -->
+  <g font-size="12" fill="#33322e" text-anchor="middle">
+    <text x="150" y="346">functions</text>
+    <text x="380" y="346">modules</text>
+  </g>
+</svg>
