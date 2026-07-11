@@ -182,6 +182,38 @@ claude-sonnet-5 rust     full            6   1.00    1.00    137160
   interface beyond what the signature block states.
 - Sample is small (2 seeds, 3 modules): direction, not headline.
 
+## Module batch 2 (6 modules × 3 languages × 3 models × 2 seeds)
+
+```
+model           lang     config      cells    s@1  rounds  tok/cell
+claude-fable-5  go       full           12   1.00    1.00    143750
+claude-fable-5  kaikai   full           12   1.00    1.00    252943
+claude-fable-5  rust     full           12   1.00    1.00    127344
+claude-opus-4-8 go       full           12   1.00    1.00    180449
+claude-opus-4-8 kaikai   full           12   1.00    1.00    331542
+claude-opus-4-8 rust     full           12   1.00    1.00     86530
+claude-sonnet-5 go       full           12   1.00    1.00    221877
+claude-sonnet-5 kaikai   full           12   1.00    1.00    604047
+claude-sonnet-5 rust     full           12   1.00    1.00    159302
+```
+
+- **Zero reds in 108 cells** — exact-output contracts, round-trip
+  invariants, floor-tie rules: none of it dents current Claude models at
+  module size. Combined with the pilots, the module-tier logic-red rate is
+  1/162 (~0.6%). The tier as authored does not generate correctness
+  pressure; it does extend the Tier 3 claim one level up, across three
+  model tiers.
+- **kaikai's prior tax keeps amortizing as tasks grow**: fable 253k
+  (modules-2) vs 285k (module pilots) vs ~500k (hard functions); opus 332k
+  vs 627k vs 1.03M; sonnet 604k vs 817k vs 1.62M. The bigger the task, the
+  cheaper per-cell the missing prior becomes — exploration is a fixed cost.
+- Verdict for the roadmap: correctness discrimination on current Claude
+  models needs the **repo tier** (planted bug in a real codebase, where
+  navigation and cross-file reasoning dominate), kaikai-specific surface
+  (effects/handlers, where mainstream idiom offers no crutch), or weaker /
+  non-Claude models. The robust, always-measurable signal is the **cost
+  dimension**, which discriminates in every experiment so far.
+
 ## Gaps left open (annotated for the next authoring pass)
 
 - **No Map/Set tasks.** kaikai has `%{}`/`%[]` literals, but Go needs
