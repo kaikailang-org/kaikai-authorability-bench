@@ -16,11 +16,12 @@
     <text x="104" y="60">1.6M</text>
   </g>
   <line x1="110" y1="320" x2="420" y2="320" stroke="#4a4943" stroke-width="1"/>
-  <!-- slopes: functions x=150, modules x=380 ; y = 320 - v*0.1647 -->
+  <!-- slopes: functions x=150, modules x=380 ; y = 320 - v(k)*0.1647 -->
   <g stroke-width="2" fill="none">
     <line x1="150" y1="238.6" x2="380" y2="276.5" stroke="#2a78d6"/>
     <line x1="150" y1="150.2" x2="380" y2="249.2" stroke="#1baf7a"/>
     <line x1="150" y1="53.3"  x2="380" y2="208.8" stroke="#eda100"/>
+    <line x1="150" y1="132.5" x2="380" y2="133.7" stroke="#008300"/>
   </g>
   <g stroke="#ffffff" stroke-width="2">
     <circle cx="150" cy="238.6" r="4.5" fill="#2a78d6"/>
@@ -29,11 +30,14 @@
     <circle cx="380" cy="249.2" r="4.5" fill="#1baf7a"/>
     <circle cx="150" cy="53.3"  r="4.5" fill="#eda100"/>
     <circle cx="380" cy="208.8" r="4.5" fill="#eda100"/>
+    <circle cx="150" cy="132.5" r="4.5" fill="#008300"/>
+    <circle cx="380" cy="133.7" r="4.5" fill="#008300"/>
   </g>
   <!-- left value labels -->
   <g font-size="10" fill="#4a4943" text-anchor="end">
     <text x="140" y="242">494k</text>
-    <text x="140" y="154">1.03M</text>
+    <text x="140" y="156">1.03M</text>
+    <text x="140" y="128">1.14M</text>
     <text x="140" y="57">1.62M</text>
   </g>
   <!-- right direct labels -->
@@ -41,6 +45,7 @@
     <text x="392" y="280" fill="#4a4943">264k · Fable 5</text>
     <text x="392" y="253" fill="#4a4943">430k · Opus 4.8</text>
     <text x="392" y="212" fill="#4a4943">675k · Sonnet 5</text>
+    <text x="392" y="137" fill="#4a4943">1.13M · GLM-5.2</text>
   </g>
   <!-- x labels -->
   <g font-size="12" fill="#33322e" text-anchor="middle">

@@ -2,11 +2,12 @@
   <rect width="640" height="380" fill="#ffffff"/>
   <!-- legend -->
   <g font-size="11" fill="#4a4943">
-    <rect x="330" y="12" width="10" height="10" rx="2" fill="#2a78d6"/><text x="344" y="21">Fable 5</text>
-    <rect x="410" y="12" width="10" height="10" rx="2" fill="#1baf7a"/><text x="424" y="21">Opus 4.8</text>
-    <rect x="498" y="12" width="10" height="10" rx="2" fill="#eda100"/><text x="512" y="21">Sonnet 5</text>
+    <rect x="252" y="12" width="10" height="10" rx="2" fill="#2a78d6"/><text x="266" y="21">Fable 5</text>
+    <rect x="332" y="12" width="10" height="10" rx="2" fill="#1baf7a"/><text x="346" y="21">Opus 4.8</text>
+    <rect x="420" y="12" width="10" height="10" rx="2" fill="#eda100"/><text x="434" y="21">Sonnet 5</text>
+    <rect x="506" y="12" width="10" height="10" rx="2" fill="#008300"/><text x="520" y="21">GLM-5.2</text>
   </g>
-  <!-- gridlines + y labels (tokens per cell, thousands) -->
+  <!-- gridlines + y labels -->
   <g stroke="#e8e7e2" stroke-width="1">
     <line x1="64" y1="263" x2="624" y2="263"/>
     <line x1="64" y1="195" x2="624" y2="195"/>
@@ -21,32 +22,35 @@
     <text x="58" y="61">1.6M</text>
   </g>
   <line x1="64" y1="332" x2="624" y2="332" stroke="#4a4943" stroke-width="1"/>
-  <!-- Go group -->
-  <path d="M110,332 L110,318 Q110,314 114,314 L136,314 Q140,314 140,318 L140,332 Z" fill="#2a78d6"/>
-  <path d="M142,332 L142,312 Q142,308 146,308 L168,308 Q172,308 172,312 L172,332 Z" fill="#1baf7a"/>
-  <path d="M174,332 L174,283 Q174,279 178,279 L200,279 Q204,279 204,283 L204,332 Z" fill="#eda100"/>
-  <g font-size="9.5" fill="#4a4943" text-anchor="middle">
-    <text x="125" y="309">105k</text><text x="157" y="303">137k</text><text x="189" y="274">308k</text>
+  <!-- Go group: x0=106 -->
+  <path d="M106,332 L106,318 Q106,314 110,314 L126,314 Q130,314 130,318 L130,332 Z" fill="#2a78d6"/>
+  <path d="M132,332 L132,312 Q132,308 136,308 L152,308 Q156,308 156,312 L156,332 Z" fill="#1baf7a"/>
+  <path d="M158,332 L158,283 Q158,279 162,279 L178,279 Q182,279 182,283 L182,332 Z" fill="#eda100"/>
+  <path d="M184,332 L184,315 Q184,311 188,311 L204,311 Q208,311 208,315 L208,332 Z" fill="#008300"/>
+  <g font-size="9" fill="#4a4943" text-anchor="middle">
+    <text x="118" y="309">105k</text><text x="144" y="303">137k</text><text x="170" y="274">308k</text><text x="196" y="343" fill="#ffffff"></text><text x="196" y="306">123k</text>
   </g>
-  <!-- Rust group -->
-  <path d="M297,332 L297,314 Q297,310 301,310 L323,310 Q327,310 327,314 L327,332 Z" fill="#2a78d6"/>
-  <path d="M329,332 L329,321 Q329,317 333,317 L355,317 Q359,317 359,321 L359,332 Z" fill="#1baf7a"/>
-  <path d="M361,332 L361,291 Q361,287 365,287 L387,287 Q391,287 391,291 L391,332 Z" fill="#eda100"/>
-  <g font-size="9.5" fill="#4a4943" text-anchor="middle">
-    <text x="312" y="305">129k</text><text x="344" y="312">88k</text><text x="376" y="282">260k</text>
+  <!-- Rust group: x0=293 -->
+  <path d="M293,332 L293,314 Q293,310 297,310 L313,310 Q317,310 317,314 L317,332 Z" fill="#2a78d6"/>
+  <path d="M319,332 L319,321 Q319,317 323,317 L339,317 Q343,317 343,321 L343,332 Z" fill="#1baf7a"/>
+  <path d="M345,332 L345,291 Q345,287 349,287 L365,287 Q369,287 369,291 L369,332 Z" fill="#eda100"/>
+  <path d="M371,332 L371,323 Q371,319 375,319 L391,319 Q395,319 395,323 L395,332 Z" fill="#008300"/>
+  <g font-size="9" fill="#4a4943" text-anchor="middle">
+    <text x="305" y="305">129k</text><text x="331" y="312">88k</text><text x="357" y="282">260k</text><text x="383" y="314">74k</text>
   </g>
-  <!-- kaikai group -->
-  <path d="M483,332 L483,251 Q483,247 487,247 L509,247 Q513,247 513,251 L513,332 Z" fill="#2a78d6"/>
-  <path d="M515,332 L515,159 Q515,155 519,155 L541,155 Q545,155 545,159 L545,332 Z" fill="#1baf7a"/>
-  <path d="M547,332 L547,58 Q547,54 551,54 L573,54 Q577,54 577,58 L577,332 Z" fill="#eda100"/>
-  <g font-size="9.5" fill="#4a4943" text-anchor="middle">
-    <text x="498" y="242">494k</text><text x="530" y="150">1.03M</text><text x="562" y="49">1.62M</text>
+  <!-- kaikai group: x0=480 -->
+  <path d="M480,332 L480,251 Q480,247 484,247 L500,247 Q504,247 504,251 L504,332 Z" fill="#2a78d6"/>
+  <path d="M506,332 L506,159 Q506,155 510,155 L526,155 Q530,155 530,159 L530,332 Z" fill="#1baf7a"/>
+  <path d="M532,332 L532,58 Q532,54 536,54 L552,54 Q556,54 556,58 L556,332 Z" fill="#eda100"/>
+  <path d="M558,332 L558,140 Q558,136 562,136 L578,136 Q582,136 582,140 L582,332 Z" fill="#008300"/>
+  <g font-size="9" fill="#4a4943" text-anchor="middle">
+    <text x="492" y="242">494k</text><text x="518" y="150">1.03M</text><text x="544" y="49">1.62M</text><text x="570" y="131">1.14M</text>
   </g>
   <!-- x labels -->
   <g font-size="12" fill="#33322e" text-anchor="middle">
     <text x="157" y="354">Go</text>
     <text x="344" y="354">Rust</text>
-    <text x="530" y="354">kaikai</text>
+    <text x="531" y="354">kaikai</text>
   </g>
   <text x="64" y="24" font-size="11" fill="#6b6a63">tokens per cell</text>
 </svg>

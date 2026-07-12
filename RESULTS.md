@@ -217,13 +217,17 @@ claude-sonnet-5 rust     full           12   1.00    1.00    159302
 ## First non-Claude model: GLM-5.2 via opencode (90 cells)
 
 Hard batch (6 × 3 × 2) plus all nine modules (9 × 3 × 2), agent command
-`opencode run --auto --dir {cwd}`, model `hf:zai-org/GLM-5.2`. Token counts
-are unknown (opencode's output format carries no usage the runner parses
-yet); rounds and greens are fully comparable.
+`opencode run --auto --dir {cwd}`, model `hf:zai-org/GLM-5.2`. Token usage
+was recovered post-hoc from opencode's local session store (each assistant
+message records tokens, cost, and the scratch cwd — an exact cell mapping)
+and backfilled into the run records, including per-cell `cost_usd`.
 
 ```
 GLM-5.2  hard batch:  go 12/12 s@1,  kaikai 12/12 s@1,  rust 12/12 s@1
 GLM-5.2  modules:     go 0.94 s@1,   kaikai 18/18 s@1,  rust 0.94 s@1
+tok/cell hard:    go 123k   kaikai 1.14M   rust  74k
+tok/cell modules: go 150k   kaikai 1.13M   rust  83k
+total cost, 90 cells: $59.08
 ```
 
 - **The inversion.** GLM's only two reds — both genuine logic misses,
@@ -238,7 +242,13 @@ GLM-5.2  modules:     go 0.94 s@1,   kaikai 18/18 s@1,  rust 0.94 s@1
   generic fixes (the {cwd} anchor for CLIs that pin file tools to a
   discovered project root, and --model-label). The protocol — stdin
   prompt, scratch cwd, sol.<ext> delivery, kai shim — held as-is.
-- Gap: an opencode usage parser, if GLM cost curves become interesting.
+- **GLM does not amortize.** Its kaikai tax is flat functions→modules
+  (1.14M→1.13M) where every Claude model drops ~50%. Amortization is a
+  model capability (consolidating in-session language learning across a
+  bigger task), not a property of task structure — the sharpest
+  model-strength discriminator the cost axis has produced.
+- Gap: the runner still can't capture opencode usage live; the session-store
+  backfill covers past runs.
 
 ## Gaps left open (annotated for the next authoring pass)
 
