@@ -30,9 +30,10 @@
     Three findings. First, correctness saturates: every model — including an open-weight,
     non-Anthropic one — matches its Rust/Go first-round success rate in kaikai (≈100%
     throughout; the open-weight model's only failures were in the mainstream languages).
-    Second, the missing prior is paid in *tokens*, not correctness: kaikai costs 4–12×
+    Second, the missing prior is paid in *tokens*, not correctness: kaikai costs 4–15×
     the tokens of a known language at function scale, a tax that scales inversely with model
-    strength and amortizes by roughly half when tasks grow to module size. Third, the value
+    strength and — for the stronger models — amortizes by roughly half when tasks grow to
+    module size, while the open-weight model re-pays it flat on every task. Third, the value
     of the machine-queryable reference has a *sign that depends on the task*: removing it
     costs +26% tokens on stdlib-heavy tasks but *saves* 26–58% on algorithm-heavy ones — a
     "curiosity tax" that weaker models pay most. The benchmark's red rounds, though rare,
@@ -153,29 +154,37 @@ kaikai-specific surface (effects and handlers) where mainstream idiom offers no 
 #figure(
   image("figures/fig1-prior-tax.svg", width: 86%),
   caption: [Tokens per cell on the hard-function batch, full configuration. kaikai costs
-  3.8–6.2× that model's cheaper mainstream language; the multiple grows as the model tier
-  drops (Fable 4.7×, Opus 11.7×, Sonnet 6.2× vs. its cheapest).],
+  a multiple of that model's cheaper mainstream language, and the multiple grows as the
+  model tier drops: Fable 4.7×, Opus 11.7×, Sonnet 6.2×, GLM-5.2 15.4×.],
 ) <fig-tax>
 
 Correctness parity is not free (@fig-tax). At function scale, writing kaikai costs Fable
-≈494k tokens per cell against ≈105–129k for Go/Rust; Opus pays ≈1.03M; Sonnet ≈1.62M. The
-missing prior is being purchased at run time — the agent reads the reference, probes with
-`kai run`, inspects holes — and *weaker models buy more of it*. Token counts include cached
-context re-reads (the dominant term), so these are utilization figures, not dollar costs.
+≈494k tokens per cell against ≈105–129k for Go/Rust; Opus pays ≈1.03M; Sonnet ≈1.62M;
+GLM-5.2 ≈1.14M against its ≈74–123k mainstream baseline. The missing prior is being
+purchased at run time — the agent reads the reference, probes with `kai run`, inspects
+holes — and *weaker models buy more of it*. Token counts include cached context re-reads
+(the dominant term), so these are utilization figures rather than dollar costs; as a
+concrete anchor, GLM-5.2's 90 cells cost \$59 total at list prices.
 
 #figure(
   image("figures/fig2-amortization.svg", width: 74%),
-  caption: [kaikai tokens per cell, functions → modules (full configuration). The
-  exploration cost is a fixed cost: it amortizes as the task grows.],
+  caption: [kaikai tokens per cell, functions → modules (full configuration). For the
+  Claude models the exploration cost amortizes as the task grows; GLM-5.2 re-pays the
+  full tax per task, flat across tiers.],
 ) <fig-amort>
 
-The tax also *amortizes* (@fig-amort): moving from single functions to multi-function
-modules — more code per cell, not less — kaikai's per-cell cost *drops* 47–58% for every
-model (Fable 494k→264k, Opus 1.03M→430k, Sonnet 1.62M→675k), while mainstream languages
+For the Claude models the tax also *amortizes* (@fig-amort): moving from single functions
+to multi-function modules — more code per cell, not less — kaikai's per-cell cost *drops*
+47–58% (Fable 494k→264k, Opus 1.03M→430k, Sonnet 1.62M→675k), while mainstream languages
 stay roughly flat. Exploring the language is a fixed cost paid per task; the more code that
-exploration supports, the cheaper the missing prior becomes per unit of output. The
-extrapolation — unverified — is that at repository scale the prior tax approaches the
-noise floor.
+exploration supports, the cheaper the missing prior becomes per unit of output. GLM-5.2 is
+the counterexample that sharpens the claim: its kaikai cost is flat across tiers
+(1.14M→1.13M) — it re-pays the full exploration on every task. Amortization, then, is not
+a property of the task structure but a *capability of the model*: the stronger models
+consolidate what they learned about the language within a session and spend it across the
+larger task; the weaker one explores anew each time. The extrapolation — unverified — is
+that at repository scale the prior tax approaches the noise floor for models that
+amortize, and remains a constant multiple for those that do not.
 
 == The reference has task-dependent sign
 
@@ -255,8 +264,9 @@ per-model coefficients carry meaningful variance, and single-red observations (O
 Sonnet's 0.94) are anecdotes with the right sign, not measurements. *One task author.* All
 65 tasks were authored within this project; a pilot run caught one unfair hidden test
 (requiring undeclared trait derives in Rust), which was fixed and its cells re-run — other
-biases may remain. *Token counts are utilization, not cost*, dominated by cached re-reads,
-and are unavailable for GLM-5.2 (its CLI does not report usage). *Saturation bounds the
+biases may remain. *Token counts are utilization, not cost*, dominated by cached re-reads; GLM-5.2's counts
+were recovered post-hoc from its CLI's local session store rather than captured by the
+harness, an asymmetry in provenance though not in definition. *Saturation bounds the
 instrument.* With success\@1 ≈ 1.0 everywhere, correctness comparisons are uninformative at
 these tiers for these models; claims are correspondingly about cost. *The asymmetry ages.*
 kaikai's absence from training corpora is what makes the experiment clean; the moment
