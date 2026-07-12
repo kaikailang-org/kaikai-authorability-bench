@@ -252,10 +252,13 @@ tier, by task's stdlib surface, by task size — and at least one member (the cu
 actively rewards making documentation *smaller* at the point of consumption.
 
 The result also suggests a practical adoption argument for new languages generally: the
-cold-start problem is real but it is a *pricing* problem, not a capability problem, and it
-shrinks with task size. A team choosing kaikai for module-scale work pays roughly 2–3× in
-agent tokens today, not the 5–12× the function-scale numbers suggest, and none of it in
-correctness.
+cold-start problem is real but it is a *pricing* problem, not a capability problem, and —
+for models that amortize — it shrinks with task size. A team choosing kaikai for
+module-scale work with a frontier model pays roughly 2–5× in agent tokens today, not the
+5–15× the function-scale numbers suggest, and none of it in correctness. With a
+non-amortizing model the multiple stays flat (≈14× for GLM-5.2 at module scale), which
+turns reference-consultation efficiency from polish into the adoption bottleneck — the
+motivation behind the tooling changes filed upstream.
 
 = Threats to validity
 
