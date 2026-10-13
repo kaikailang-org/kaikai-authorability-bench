@@ -124,6 +124,13 @@ Lessons from the plumbing pilot (claude CLI 2.1.x):
   `-p` mode.
 - Use `--tasks id1,id2` and `--langs kaikai` to scope a run; every run writes
   `meta.json`, `results.jsonl`, and full per-round transcripts.
+- **Isolate the agent from the host's accumulated state.** An agentic CLI
+  with persistent per-project memory will write what it learns about kaikai
+  in one cell and load it in the next, which breaks the zero-prior condition.
+  Run with the CLI's customizations and memory off (`claude -p --safe-mode`
+  with `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`), and set `BENCH_RESULTS` to a
+  directory outside this repository so the scratch cwd is not inside a
+  checkout that also holds `reference/` and `tests/`.
 
 Every task ships with a reference solution per language; `--smoke` compiles and
 runs reference+tests for every cell — a task is well-formed only if all three

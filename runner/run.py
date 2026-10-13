@@ -16,6 +16,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 KAI = os.environ.get("KAI", "kai")
+# Agent scratch dirs live under RESULTS; inside the repo the agent's cwd can
+# reach reference/ and tests/, and shares the repo's per-project agent state.
+RESULTS = Path(os.environ.get("BENCH_RESULTS", ROOT / "results"))
 
 # ---------------------------------------------------------------- adapters
 # assemble(work_dir, solution_text, test_text) -> path of runnable artifact
@@ -125,7 +128,7 @@ def smoke(langs, only=None):
             ref = ROOT / "reference" / task["id"] / ext
             if not ref.exists():
                 print(f"MISS  {task['id']} {lang} (no reference)"); bad += 1; continue
-            d = ROOT / "results" / "smoke-run" / f"{task['id']}-{lang}"
+            d = RESULTS / "smoke-run" / f"{task['id']}-{lang}"
             green, fb = cell(task, lang, ref.read_text(), d)
             print(f"{'OK   ' if green else 'FAIL '}{task['id']} {lang}" + ("" if green else f"\n{fb}"))
             bad += 0 if green else 1
@@ -380,7 +383,7 @@ def agent_loop(agent_cmd, langs, seeds, max_rounds, timeout, config, only=None,
                model_label=None):
     ts = int(time.time())
     while True:
-        run_dir = ROOT / "results" / f"run-{ts}"
+        run_dir = RESULTS / f"run-{ts}"
         try:
             (run_dir / "transcripts").mkdir(parents=True)
             break
