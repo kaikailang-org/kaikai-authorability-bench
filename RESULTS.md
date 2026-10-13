@@ -1,7 +1,17 @@
 # Results
 
-No benchmark numbers yet — this file tracks the state of the task set and
-what remains before a full run is meaningful.
+Run log, oldest first. The current numbers are in the last run section
+(*Isolated re-run on current models*).
+
+**Read the July Claude sections with this caveat:** every Claude cell from the
+calibration run through module batch 2 ran with the agent CLI's persistent
+per-project memory enabled and shared across cells. The agents wrote 26 notes
+about kaikai into it as they went (syntax traps, stdlib names, the algorithm
+for min_rooms), and later cells loaded them. Token costs, the amortization
+trend, and the no-info sign reported in those sections are confounded with
+that accumulation. GLM-5.2's own numbers are unaffected (different CLI, no
+access to the store), but that section's comparisons against the Claude
+amortization trend are.
 
 ## Task set (function tier)
 
@@ -250,6 +260,58 @@ total cost, 90 cells: $59.08
 - Gap: the runner still can't capture opencode usage live; the session-store
   backfill covers past runs.
 
+## Isolated re-run on current models: Opus 5.5, Sonnet 5.5 (204 cells)
+
+Hard batch (6 × 3 × 2) and all nine modules (9 × 3 × 2) under full tooling,
+plus the hard batch in kaikai under no-info (6 × 2), per model. kaikai
+0.146.0. Agent command:
+`claude -p --safe-mode --model <id> --output-format json --allowedTools Bash`
+with `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` and `BENCH_RESULTS` pointing outside
+the repository — no persistent memory, no user or project instructions, and a
+scratch cwd from which `reference/` and `tests/` are not reachable.
+
+```
+model              lang    config   batch     cells   s@1  tok/cell  turns  $/cell
+claude-opus-5-5    go      full     hard         12  1.00     39594    2.9   0.084
+claude-opus-5-5    rust    full     hard         12  1.00     38124    2.9   0.085
+claude-opus-5-5    kaikai  full     hard         12  1.00    158424    6.7   0.220
+claude-opus-5-5    kaikai  no-info  hard         12  1.00    277318   11.1   0.265
+claude-opus-5-5    go      full     modules      18  1.00     42258    3.1   0.096
+claude-opus-5-5    rust    full     modules      18  1.00     41638    3.2   0.085
+claude-opus-5-5    kaikai  full     modules      18  1.00    184477    7.4   0.245
+claude-sonnet-5-5  go      full     hard         12  1.00     38042    2.8   0.034
+claude-sonnet-5-5  rust    full     hard         12  1.00     34807    2.2   0.032
+claude-sonnet-5-5  kaikai  full     hard         12  1.00    203107    9.1   0.094
+claude-sonnet-5-5  kaikai  no-info  hard         12  1.00    235881   10.9   0.107
+claude-sonnet-5-5  go      full     modules      18  1.00     38738    2.9   0.037
+claude-sonnet-5-5  rust    full     modules      18  1.00     35622    2.3   0.036
+claude-sonnet-5-5  kaikai  full     modules      18  1.00    255672   10.8   0.111
+```
+
+Total cost $22.04 by the CLI's accounting. One agent round timed out (opus ×
+normalize_path × no-info, 600 s) and was retried green; no cell was excluded.
+
+- **204/204 green in round 1**, both models, all three languages, both tiers,
+  no-info included. No red round of any kind.
+- **The prior tax reproduces**: kaikai costs 4.2× (opus) and 5.8× (sonnet) the
+  model's cheaper mainstream language on hard functions, 4.4× and 7.2× on
+  modules — roughly 3× in dollars. Paid in turns: ~7-11 per kaikai cell
+  against ~3.
+- **Amortization does not reproduce.** kaikai cost rises functions→modules
+  (opus +16%, sonnet +26%) while mainstream moves +2-9%. The July drop of
+  47-58% coincides with memory accumulating between the function and module
+  runs; the "amortization is a model capability" reading of GLM's flat line
+  is withdrawn — nobody amortizes across fresh sessions.
+- **The curiosity tax does not reproduce.** Removing `kai info` costs opus
+  +75% (every task mean higher) and sonnet +16% (inside seed noise: 3 tasks
+  up, 3 down). In July the no-info runs came after the full runs, with the
+  memory store filling in between.
+- Models and kaikai release also changed since July, so this does not isolate
+  memory as the cause of the July pattern; it removes the support for both
+  claims.
+- Not re-run: the calibration set (stdlib-heavy no-info, no-holes,
+  flat-diags) and GLM-5.2.
+
 ## Gaps left open (annotated for the next authoring pass)
 
 - **No Map/Set tasks.** kaikai has `%{}`/`%[]` literals, but Go needs
@@ -265,5 +327,9 @@ total cost, 90 cells: $59.08
   stack_calc / turtle_walk, inventory_ops / ledger_accounts / grade_book,
   text_table / query_string / log_summary); ~6 more to reach the target.
   **Repo tier (~10) unauthored.**
-- Runner ablations (`--config no-info|no-holes|flat-diags`) exist but have
-  not been exercised in a real run yet.
+- **Memory as a measured variable.** An agent that keeps notes on an
+  unfamiliar language is a realistic deployment; measuring how fast the tax
+  falls under accumulated memory needs controlled store contents and
+  randomized run order.
+- `no-holes` and `flat-diags` have only the contaminated July calibration
+  numbers; they need tasks that produce red rounds.

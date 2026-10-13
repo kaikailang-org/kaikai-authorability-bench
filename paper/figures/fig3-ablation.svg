@@ -1,39 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="250" viewBox="0 0 640 250" font-family="Helvetica, Arial, sans-serif">
-  <rect width="640" height="250" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="170" viewBox="0 0 640 170" font-family="Helvetica, Arial, sans-serif">
+  <rect width="640" height="170" fill="#ffffff"/>
   <text x="20" y="24" font-size="11" fill="#6b6a63">change in tokens per cell when kai info is removed</text>
-  <!-- x gridlines: scale -70..+30 %, px/% = 4.2, zero at x=484 -->
+  <!-- zero at x=220, 3.6 px per % -->
   <g stroke="#e8e7e2" stroke-width="1">
-    <line x1="232" y1="44" x2="232" y2="206"/>
-    <line x1="316" y1="44" x2="316" y2="206"/>
-    <line x1="400" y1="44" x2="400" y2="206"/>
-    <line x1="568" y1="44" x2="568" y2="206"/>
+    <line x1="310" y1="44" x2="310" y2="122"/>
+    <line x1="400" y1="44" x2="400" y2="122"/>
+    <line x1="490" y1="44" x2="490" y2="122"/>
+    <line x1="580" y1="44" x2="580" y2="122"/>
   </g>
   <g font-size="10" fill="#6b6a63" text-anchor="middle">
-    <text x="232" y="222">-60%</text>
-    <text x="316" y="222">-40%</text>
-    <text x="400" y="222">-20%</text>
-    <text x="484" y="222">0</text>
-    <text x="568" y="222">+20%</text>
+    <text x="220" y="140">0</text>
+    <text x="310" y="140">+25%</text>
+    <text x="400" y="140">+50%</text>
+    <text x="490" y="140">+75%</text>
+    <text x="580" y="140">+100%</text>
   </g>
-  <line x1="484" y1="40" x2="484" y2="210" stroke="#4a4943" stroke-width="1"/>
-  <!-- rows: h=26 -->
-  <!-- Fable stdlib-heavy +25.8% -->
-  <path d="M484,48 L584,48 Q588,48 588,52 L588,70 Q588,74 584,74 L484,74 Z" fill="#2a78d6"/>
-  <text x="594" y="65" font-size="10.5" fill="#4a4943">+26%</text>
-  <!-- Fable algorithm-heavy -26.5% -->
-  <path d="M484,90 L377,90 Q373,90 373,94 L373,112 Q373,116 377,116 L484,116 Z" fill="#2a78d6"/>
-  <text x="367" y="107" font-size="10.5" fill="#4a4943" text-anchor="end">-26%</text>
-  <!-- Opus algorithm-heavy -57.0% -->
-  <path d="M484,132 L249,132 Q245,132 245,136 L245,154 Q245,158 249,158 L484,158 Z" fill="#1baf7a"/>
-  <text x="239" y="149" font-size="10.5" fill="#4a4943" text-anchor="end">-57%</text>
-  <!-- Sonnet algorithm-heavy -58.0% -->
-  <path d="M484,174 L245,174 Q241,174 241,178 L241,196 Q241,200 245,200 L484,200 Z" fill="#eda100"/>
-  <text x="235" y="191" font-size="10.5" fill="#4a4943" text-anchor="end">-58%</text>
-  <!-- row labels -->
+  <line x1="220" y1="40" x2="220" y2="126" stroke="#4a4943" stroke-width="1"/>
+  <!-- Opus 5.5 +75.0% -->
+  <path d="M220,48 L486.2,48 Q490.2,48 490.2,52 L490.2,70 Q490.2,74 486.2,74 L220,74 Z" fill="#2a78d6"/>
+  <text x="496.2" y="65" font-size="10.5" fill="#4a4943">+75%</text>
+  <!-- Sonnet 5.5 +16.1% -->
+  <path d="M220,90 L274.1,90 Q278.1,90 278.1,94 L278.1,112 Q278.1,116 274.1,116 L220,116 Z" fill="#eda100"/>
+  <text x="284.1" y="107" font-size="10.5" fill="#4a4943">+16%</text>
   <g font-size="11" fill="#33322e" text-anchor="start">
-    <text x="20" y="65">Fable 5 · stdlib-heavy</text>
-    <text x="20" y="107">Fable 5 · algorithm-heavy</text>
-    <text x="20" y="149">Opus 4.8 · algorithm-heavy</text>
-    <text x="20" y="191">Sonnet 5 · algorithm-heavy</text>
+    <text x="20" y="65">Opus 5.5 · algorithm-heavy</text>
+    <text x="20" y="107">Sonnet 5.5 · algorithm-heavy</text>
   </g>
 </svg>
